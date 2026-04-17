@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Complaint Form</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; padding: 15px; color: #333; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #004085; margin-bottom: 20px; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        label { font-weight: bold; display: block; margin-top: 15px; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        input:focus, select:focus, textarea:focus { border-color: #007bff; outline: none; box-shadow: 0 0 5px rgba(0,123,255,0.2); }
+        .required { color: red; }
+        button { background: #007bff; color: white; padding: 15px; border: none; cursor: pointer; width: 100%; font-size: 18px; font-weight: bold; border-radius: 6px; margin-top: 25px; transition: background 0.3s; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .call-container { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
+        .call-btn { background: #28a745; text-decoration: none; display: inline-block; color: white; border-radius: 50px; padding: 12px 30px; font-weight: bold; font-size: 16px; margin-top: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .call-btn:hover { background: #218838; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Lodge a Complaint</h2>
+    <form id="complaintForm">
+        <label>Complaint From <span class="required">*</span></label>
+        <select name="userType" required>
+            <option value="">-- Select Category --</option>
+            <option value="Customer">Direct Customer</option>
+            <option value="Shop">Shop / Dealer</option>
+        </select>
+
+        <label>Customer Name <span class="required">*</span></label>
+        <input type="text" name="name" placeholder="Enter full name" required>
+
+        <label>Phone Number <span class="required">*</span></label>
+        <input type="tel" name="phone" placeholder="Enter mobile number" required>
+
+        <label>Address <span class="required">*</span></label>
+        <textarea name="address" rows="3" placeholder="Enter complete address" required></textarea>
+
+        <label>Pincode <span class="required">*</span></label>
+        <input type="text" name="pincode" placeholder="6-digit pincode" required>
+
+        <label>Brand</label>
+        <input type="text" name="brand" placeholder="e.g., Voltas">
+
+        <label>Model Name/Number</label>
+        <input type="text" name="model" placeholder="Model details">
+
+        <label>Dealer Name</label>
+        <input type="text" name="dealerName" placeholder="Shop name where purchased">
+
+        <label>Dealer Contact</label>
+        <input type="text" name="dealerContact" placeholder="Dealer phone number">
+
+        <button type="submit" id="submitBtn">Submit Complaint</button>
+    </form>
+
+    <div class="call-container">
+        <p style="margin-bottom: 5px;">Need urgent support?</p>
+        <a href="tel:+919624870096" class="call-btn">📞 Call +91 96248 70096</a>
+    </div>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzefDhxDKHP2uFr53VoMqG2lnz1620csO6d6llUgt8whC8GbopAVafl8chy0O4M-YtX/exec';
+    const form = document.getElementById('complaintForm');
+    const btn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        btn.disabled = true;
+        btn.innerText = "Submitting Data...";
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                alert("Complaint Registered Successfully! Our team will contact you soon.");
+                form.reset();
+                btn.disabled = false;
+                btn.innerText = "Submit Complaint";
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert("Submission failed. Please check your internet or call support.");
+                btn.disabled = false;
+                btn.innerText = "Submit Complaint";
+            });
+    });
+</script>
+
+</body>
+</html>
