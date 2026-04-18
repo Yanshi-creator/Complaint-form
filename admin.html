@@ -11,8 +11,8 @@
         .count-badge { background: #ffc107; color: #000; padding: 2px 8px; border-radius: 10px; font-weight: bold; font-size: 12px; }
         
         .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-top: 5px solid #007bff; position: relative; }
-        .status-Completed { border-top-color: #28a745; opacity: 0.8; background: #f9fff9; }
-        .status-Incomplete { border-top-color: #dc3545; opacity: 0.8; background: #fff5f5; }
+        .status-Completed { border-top-color: #28a745; opacity: 0.8; background: #f9fff9; } /* Light Green */
+        .status-Incomplete { border-top-color: #dc3545; opacity: 0.8; background: #fff5f5; } /* Light Red */
         
         .time-badge { font-size: 11px; color: #666; font-weight: bold; margin-bottom: 5px; display: block; }
         .shop-tag { color: #d32f2f; font-weight: bold; display: block; margin: 5px 0; font-size: 14px; }
@@ -67,10 +67,14 @@
                     
                     const msg = `*RAMA ELECTRONICS*%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Issue:* ${item.problem}`;
                     
+                    // Logic to display correct icon and text for completed vs incomplete
+                    const statusIcon = item.status === "Completed" ? "✅ COMPLETED" : "❌ INCOMPLETE/CANCELLED";
+                    const statusColor = item.status === "Completed" ? "green" : "#dc3545";
+
                     const cardHtml = `
                     <div class="card status-${item.status}">
                         <span class="time-badge">🕒 Logged: ${dateStr} | ${timeStr}</span>
-                        ${!isPending ? `<b style="float:right; color:${item.status === 'Completed' ? 'green':'red'}; font-size:13px;">✅ ${item.status.toUpperCase()}</b>` : ''}
+                        ${!isPending ? `<b style="float:right; color:${statusColor}; font-size:12px;">${statusIcon}</b>` : ''}
                         
                         <span class="shop-tag">🏪 Dealer Shop: ${item.dealer || 'Direct Customer'}</span>
                         <h3 style="margin:5px 0; font-size: 18px;">${item.name}</h3>
@@ -91,12 +95,12 @@
                         ${isPending ? `
                             <textarea id="rem-${item.row}" class="remark-box" rows="2" placeholder="Tech Notes: What was done? Or why is it incomplete?"></textarea>
                             <div class="btn-row">
-                                <button class="c-btn" style="background:#28a745" onclick="update('${item.row}', 'Completed')">Complete</button>
-                                <button class="c-btn" style="background:#dc3545" onclick="update('${item.row}', 'Incomplete/Cancel')">Incomplete/Cancel</button>
+                                <button class="c-btn" style="background:#28a745" onclick="update(event, '${item.row}', 'Completed')">Complete</button>
+                                <button class="c-btn" style="background:#dc3545" onclick="update(event, '${item.row}', 'Incomplete')">Incomplete/Cancel</button>
                             </div>
                             <a href="https://wa.me/?text=${msg}" target="_blank" class="wa-btn">📲 WhatsApp Text</a>
                         ` : `
-                            <div style="margin-top:15px; font-size:14px; background:#e9ecef; padding:10px; border-radius:6px; border-left: 4px solid #6c757d;">
+                            <div style="margin-top:15px; font-size:14px; background:#e9ecef; padding:10px; border-radius:6px; border-left: 4px solid ${statusColor};">
                                 <small style="color:#666;">TECHNICIAN REMARKS:</small><br>
                                 <b>${item.remarks || 'No remarks provided.'}</b>
                             </div>
@@ -117,7 +121,7 @@
             } catch (e) { console.error("Error loading data", e); }
         }
 
-        async function update(row, status) {
+        async function update(event, row, status) {
             const remark = document.getElementById('rem-' + row).value.trim();
             if(!remark) {
                 alert("Please type your remarks/notes before submitting!");
@@ -125,13 +129,25 @@
             }
             if(!confirm(`Mark this job as ${status}?`)) return;
             
-            await fetch(`${scriptURL}?action=updateStatus&row=${row}&status=${status}&remarks=${encodeURIComponent(remark)}`);
-            alert("Report Saved Successfully!");
-            load();
+            // Disable button while saving to prevent double-clicks
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "Saving...";
+            btn.disabled = true;
+
+            try {
+                await fetch(`${scriptURL}?action=updateStatus&row=${row}&status=${status}&remarks=${encodeURIComponent(remark)}`);
+                alert("Report Saved Successfully!");
+                load();
+            } catch (err) {
+                alert("Error saving report. Please check your internet connection.");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         }
 
         load();
-        setInterval(load, 180000);
+        setInterval(load, 180000); // Auto-refresh every 3 mins
     </script>
 </body>
 </html>
