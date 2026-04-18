@@ -7,30 +7,30 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 15px; margin: 0; }
         .header { background: #004085; color: white; padding: 15px; text-align: center; border-radius: 0 0 15px 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; border-top: 6px solid #007bff; transition: transform 0.2s; }
-        .card:active { transform: scale(0.98); }
-        .done-btn { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; position: absolute; top: 15px; right: 15px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; border-top: 6px solid #007bff; }
         .tech-tag { background: #e7f3ff; color: #007bff; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        .shop-label { color: #dc3545; font-weight: bold; font-size: 13px; display: block; margin-bottom: 5px; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; font-size: 14px; border-top: 1px solid #eee; padding-top: 10px; }
-        .label { color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+        .label { color: #666; font-size: 11px; text-transform: uppercase; display: block; }
         .problem-section { background: #fff9c4; padding: 12px; border-radius: 8px; border-left: 4px solid #fbc02d; margin: 15px 0; }
-        .wa-btn { background: #25D366; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 8px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .wa-btn { background: #25D366; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 8px; font-weight: bold; }
+        .done-btn { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; position: absolute; top: 15px; right: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="header">
     <h2 style="margin:0;">Staff Portal</h2>
-    <div style="font-size: 12px; opacity: 0.8;">Managing: Santosh | Rakesh | Ajay</div>
+    <small>Heena Electronics Dashboard</small>
 </div>
 
 <div id="complaintList" style="max-width: 600px; margin: auto;">
-    <p style="text-align: center;">Fetching complaints from Excel...</p>
+    <p style="text-align: center;">Loading Data from Excel...</p>
 </div>
 
 <script>
-    // UPDATED WITH YOUR NEW URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzQi8ZWYbkmX6IEdTdOxhBVJS90mE359PRO0SD7D8zRuLNnMpbKJ1TgC9AYFDeJtG71/exec';
+    // UPDATED WITH YOUR NEWEST URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxemkueO9HlOsz-_SYZZvh_o9Nw18Kt3_kAsl9W9lGq5GhIBX6Vto0GZ9ZH0tWYg28c/exec';
 
     async function fetchList() {
         const container = document.getElementById('complaintList');
@@ -40,15 +40,15 @@
             
             let html = "";
             data.forEach(item => {
-                // Formatting the WhatsApp Message
-                const waMsg = `*NEW COMPLAINT*%0A--------------------------%0A*Assign:* ${item.group}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Address:* ${item.address}%0A*Brand:* ${item.brand}%0A*Model:* ${item.model}%0A*Issue:* ${item.problem}`;
+                const waMsg = `*NEW COMPLAINT*%0A--------------------------%0A*Assign:* ${item.tech}%0A*Shop/Dealer:* ${item.dealer}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Address:* ${item.address}%0A*Issue:* ${item.problem}`;
 
                 html += `
                 <div class="card">
                     <button class="done-btn" onclick="markDone(${item.row})">Mark Done</button>
-                    <span class="tech-tag">🛠️ ${item.group}</span>
+                    <span class="tech-tag">🛠️ ${item.tech}</span>
                     
-                    <h3 style="margin:5px 0; color: #333;">${item.name}</h3>
+                    <span class="shop-label">🏪 SHOP: ${item.dealer || 'DIRECT'}</span>
+                    <h3 style="margin:0;">${item.name}</h3>
                     <span style="color:#007bff; font-weight:bold; font-size: 18px;">📞 ${item.phone}</span>
 
                     <div class="info-grid">
@@ -57,42 +57,33 @@
                         <div><span class="label">Area Pincode</span><b>${item.pincode}</b></div>
                     </div>
 
-                    <p style="font-size:14px; margin:10px 0; color: #444;"><b>Address:</b><br>${item.address}</p>
+                    <p style="font-size:14px; margin:10px 0;"><b>Address:</b><br>${item.address}</p>
 
                     <div class="problem-section">
-                        <span class="label">Reported Issue:</span>
+                        <span class="label">REPORTEED PROBLEM:</span>
                         <strong style="font-size: 15px;">${item.problem}</strong>
                     </div>
 
-                    <a href="https://wa.me/?text=${waMsg}" target="_blank" class="wa-btn">📲 Share to WhatsApp Group</a>
+                    <a href="https://wa.me/?text=${waMsg}" target="_blank" class="wa-btn">📲 Forward to WhatsApp</a>
                 </div>`;
             });
-            container.innerHTML = html || "<h3 style='text-align:center; color:#666;'>No pending complaints! ✅</h3>";
+            container.innerHTML = html || "<h3>No active complaints!</h3>";
         } catch (e) {
-            container.innerHTML = "<div style='color:red; text-align:center;'>Error loading data.<br>Please ensure you deployed the Apps Script as 'Anyone'.</div>";
+            container.innerHTML = "Error loading data. Check script deployment.";
         }
     }
 
     async function markDone(row) {
-        if(!confirm("Are you sure this job is finished? This will mark it 'Completed' in Excel.")) return;
-        
+        if(!confirm("Are you sure the technician has completed this job?")) return;
         const btn = event.target;
-        const originalText = btn.innerText;
         btn.disabled = true;
-        btn.innerText = "Wait...";
+        btn.innerText = "...";
         
-        try {
-            await fetch(scriptURL + "?action=complete&row=" + row);
-            alert("Success! Excel Updated.");
-            fetchList();
-        } catch (err) {
-            alert("Failed to update. Check Internet.");
-            btn.disabled = false;
-            btn.innerText = originalText;
-        }
+        await fetch(scriptURL + "?action=complete&row=" + row);
+        alert("Excel Updated! Row: " + row + " is marked Completed.");
+        fetchList();
     }
 
-    // Initial load
     fetchList();
 </script>
 
