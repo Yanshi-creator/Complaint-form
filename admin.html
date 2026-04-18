@@ -3,106 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Portal | Heena Electronics</title>
+    <title>Heena Electronics Admin</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 15px; margin: 0; }
-        .login-container { max-width: 350px; margin: 100px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
-        .hidden { display: none; }
-        .card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 10px; border-left: 8px solid #007bff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
-        .card.New { border-left-color: #ffc107; } /* New Complaints */
-        .card.Complain { border-left-color: #17a2b8; } /* Record Group */
-        .card.AJAY { border-left-color: #6610f2; } /* Ajay Group */
-        
-        h2 { color: #333; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .login-btn { background: #007bff; color: white; }
-        .wa-btn { background: #25D366; color: white; text-decoration: none; display: inline-block; padding: 10px; border-radius: 5px; margin-top: 10px; width: 100%; text-align: center; box-sizing: border-box; }
-        .done-btn { background: #dc3545; color: white; width: auto; padding: 5px 15px; font-size: 12px; position: absolute; top: 10px; right: 10px; }
-        .group-tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; background: #eee; margin-bottom: 5px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 15px; margin: 0; }
+        .header { background: #004085; color: white; padding: 15px; text-align: center; border-radius: 0 0 15px 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; border-top: 6px solid #007bff; transition: transform 0.2s; }
+        .card:active { transform: scale(0.98); }
+        .done-btn { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; position: absolute; top: 15px; right: 15px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .tech-tag { background: #e7f3ff; color: #007bff; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; font-size: 14px; border-top: 1px solid #eee; padding-top: 10px; }
+        .label { color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+        .problem-section { background: #fff9c4; padding: 12px; border-radius: 8px; border-left: 4px solid #fbc02d; margin: 15px 0; }
+        .wa-btn { background: #25D366; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 8px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
-    <div id="loginBox" class="login-container">
-        <h2>Staff Login</h2>
-        <input type="text" id="user" placeholder="Staff ID">
-        <input type="password" id="pass" placeholder="Password">
-        <button class="login-btn" onclick="authenticate()">Enter Portal</button>
-    </div>
+<div class="header">
+    <h2 style="margin:0;">Staff Portal</h2>
+    <div style="font-size: 12px; opacity: 0.8;">Managing: Santosh | Rakesh | Ajay</div>
+</div>
 
-    <div id="adminPanel" class="hidden">
-        <div style="display:flex; justify-content: space-between; align-items: center;">
-            <h2>Pending Complaints</h2>
-            <button onclick="location.reload()" style="width:auto; padding: 5px 10px;">Refresh</button>
-        </div>
-        <hr>
-        <div id="listContainer">Loading data from Excel...</div>
-    </div>
+<div id="complaintList" style="max-width: 600px; margin: auto;">
+    <p style="text-align: center;">Fetching complaints from Excel...</p>
+</div>
 
-    <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwgOEDLTDhVkbDLpMP6VJTHY92FEUgK5yEBUbqZj9SB1uvrh_TmIo50OnUcy2x0m6u5/exec';
+<script>
+    // UPDATED WITH YOUR NEW URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzQi8ZWYbkmX6IEdTdOxhBVJS90mE359PRO0SD7D8zRuLNnMpbKJ1TgC9AYFDeJtG71/exec';
 
-        function authenticate() {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
-            // You can change these credentials
-            if(u === "heena" && p === "admin777") {
-                document.getElementById('loginBox').classList.add('hidden');
-                document.getElementById('adminPanel').classList.remove('hidden');
-                fetchComplaints();
-            } else {
-                alert("Wrong ID or Password");
-            }
-        }
+    async function fetchList() {
+        const container = document.getElementById('complaintList');
+        try {
+            const resp = await fetch(scriptURL + "?action=read");
+            const data = await resp.json();
+            
+            let html = "";
+            data.forEach(item => {
+                // Formatting the WhatsApp Message
+                const waMsg = `*NEW COMPLAINT*%0A--------------------------%0A*Assign:* ${item.group}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Address:* ${item.address}%0A*Brand:* ${item.brand}%0A*Model:* ${item.model}%0A*Issue:* ${item.problem}`;
 
-        async function fetchComplaints() {
-            const container = document.getElementById('listContainer');
-            try {
-                const response = await fetch(scriptURL + "?action=read");
-                const data = await response.json();
-                
-                if (data.length === 0) {
-                    container.innerHTML = "<h3>No pending complaints! ✅</h3>";
-                    return;
-                }
-
-                let html = "";
-                data.forEach(item => {
-                    // Create the WhatsApp Message
-                    const waMessage = `*NEW COMPLAINT*%0A--------------------------%0A*Group:* ${item.group}%0A*Customer:* ${item.name}%0A*Contact:* ${item.phone}%0A*Area:* ${item.pincode}%0A*Address:* ${item.address}%0A*Issue:* ${item.problem}`;
+                html += `
+                <div class="card">
+                    <button class="done-btn" onclick="markDone(${item.row})">Mark Done</button>
+                    <span class="tech-tag">🛠️ ${item.group}</span>
                     
-                    // Simple logic to color-code cards based on group
-                    const groupClass = item.group.split(' ')[0]; 
+                    <h3 style="margin:5px 0; color: #333;">${item.name}</h3>
+                    <span style="color:#007bff; font-weight:bold; font-size: 18px;">📞 ${item.phone}</span>
 
-                    html += `
-                        <div class="card ${groupClass}">
-                            <button class="done-btn" onclick="markDone(${item.row})">Mark Done</button>
-                            <span class="group-tag">${item.group}</span><br>
-                            <strong>${item.name}</strong><br>
-                            <span>📞 ${item.phone}</span><br>
-                            <p style="font-size:14px; color:#555;">${item.address}</p>
-                            <p style="background:#fff9c4; padding:5px; border-radius:4px;"><b>Issue:</b> ${item.problem}</p>
-                            <a href="https://wa.me/?text=${waMessage}" target="_blank" class="wa-btn">📲 Share to WhatsApp Group</a>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch (e) {
-                container.innerHTML = "Error loading data. Make sure you deployed your script as 'Anyone'.";
-            }
-        }
+                    <div class="info-grid">
+                        <div><span class="label">Brand</span><b>${item.brand || 'N/A'}</b></div>
+                        <div><span class="label">Model</span><b>${item.model || 'N/A'}</b></div>
+                        <div><span class="label">Area Pincode</span><b>${item.pincode}</b></div>
+                    </div>
 
-        async function markDone(rowId) {
-            if(!confirm("Mark this complaint as completed in Excel?")) return;
-            
-            const btn = event.target;
-            btn.innerText = "...";
-            
-            await fetch(scriptURL + "?action=complete&row=" + rowId);
-            alert("Updated! Complaint moved to completed status.");
-            fetchComplaints();
+                    <p style="font-size:14px; margin:10px 0; color: #444;"><b>Address:</b><br>${item.address}</p>
+
+                    <div class="problem-section">
+                        <span class="label">Reported Issue:</span>
+                        <strong style="font-size: 15px;">${item.problem}</strong>
+                    </div>
+
+                    <a href="https://wa.me/?text=${waMsg}" target="_blank" class="wa-btn">📲 Share to WhatsApp Group</a>
+                </div>`;
+            });
+            container.innerHTML = html || "<h3 style='text-align:center; color:#666;'>No pending complaints! ✅</h3>";
+        } catch (e) {
+            container.innerHTML = "<div style='color:red; text-align:center;'>Error loading data.<br>Please ensure you deployed the Apps Script as 'Anyone'.</div>";
         }
-    </script>
+    }
+
+    async function markDone(row) {
+        if(!confirm("Are you sure this job is finished? This will mark it 'Completed' in Excel.")) return;
+        
+        const btn = event.target;
+        const originalText = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = "Wait...";
+        
+        try {
+            await fetch(scriptURL + "?action=complete&row=" + row);
+            alert("Success! Excel Updated.");
+            fetchList();
+        } catch (err) {
+            alert("Failed to update. Check Internet.");
+            btn.disabled = false;
+            btn.innerText = originalText;
+        }
+    }
+
+    // Initial load
+    fetchList();
+</script>
+
 </body>
 </html>
