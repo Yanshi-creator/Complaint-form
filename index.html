@@ -47,14 +47,25 @@
     </form>
 </div>
 <script>
-    const scriptURL = https://script.google.com/macros/s/AKfycbz_8aNEGEXTcirCAls38sdCtP0xm5UFEBA_E4oXteOyPcREQC6e0AFXWQpwze54lX7l/exec;
+    // FIX: Added single quotes around the URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz_8aNEGEXTcirCAls38sdCtP0xm5UFEBA_E4oXteOyPcREQC6e0AFXWQpwze54lX7l/exec';
+    
     const form = document.getElementById('complaintForm');
     form.addEventListener('submit', e => {
         e.preventDefault();
         document.getElementById('subBtn').innerText = "Submitting...";
+        
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-        .then(() => { alert("Success! Your complaint is registered."); location.reload(); })
-        .catch(() => alert("Error. Please check internet."));
+        .then(response => { 
+            alert("Success! Your complaint is registered."); 
+            form.reset(); // Added this to clear the form fields
+            document.getElementById('subBtn').innerText = "Submit Complaint";
+        })
+        .catch(error => {
+            alert("Error. Please check your internet connection.");
+            document.getElementById('subBtn').innerText = "Submit Complaint";
+            console.error('Error!', error.message);
+        });
     });
 </script>
 </body>
