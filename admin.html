@@ -6,13 +6,23 @@
     <style>
         body { font-family: sans-serif; background: #f0f2f5; padding: 10px; margin: 0; }
         .header { background: #004085; color: white; padding: 15px; text-align: center; margin-bottom: 20px; }
+        
+        /* Technician Group Styling */
+        .tech-section { background: #343a40; color: white; padding: 10px; border-radius: 8px; margin: 25px 0 10px 0; text-transform: uppercase; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .count-badge { background: #ffc107; color: #000; padding: 2px 8px; border-radius: 10px; font-weight: bold; font-size: 12px; }
+        
         .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-top: 5px solid #007bff; position: relative; }
         .done { opacity: 0.7; border-top-color: #28a745; background: #f9fff9; }
+        
+        /* Timestamp Styling */
+        .time-badge { font-size: 11px; color: #666; font-weight: bold; margin-bottom: 5px; display: block; }
+        
         .tech-badge { background: #e3f2fd; color: #007bff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
         .shop-tag { color: #d32f2f; font-weight: bold; display: block; margin: 5px 0; font-size: 14px; }
         .prob-box { background: #fff9c4; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #fbc02d; font-size: 14px; }
         .wa-btn { background: #25D366; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 8px; margin-top: 15px; font-weight: bold; }
-        .done-btn { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 6px; position: absolute; top: 15px; right: 15px; cursor: pointer; font-weight: bold; }
+        .done-btn { background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 6px; position: absolute; top: 15px; right: 15px; cursor: pointer; font-weight: bold; }
+        .empty-msg { text-align: center; color: #888; font-style: italic; padding: 15px; background: #fff; border-radius: 8px; border: 1px dashed #ccc; }
     </style>
 </head>
 <body>
@@ -21,50 +31,90 @@
         <div style="font-size:11px; opacity:0.8; text-transform: uppercase;">A Unit of Heena Electronics Pvt Ltd</div>
     </div>
 
-    <div id="complaintList" style="max-width: 550px; margin: auto;">Loading Daily Records...</div>
+    <div id="dashboard" style="max-width: 550px; margin: auto;">
+        <div class="tech-section">👤 Santosh Group <span class="count-badge" id="count-santosh">0</span></div>
+        <div id="list-santosh"></div>
+
+        <div class="tech-section">👤 Rakesh Group <span class="count-badge" id="count-rakesh">0</span></div>
+        <div id="list-rakesh"></div>
+
+        <div class="tech-section">👤 Ajay Group <span class="count-badge" id="count-ajay">0</span></div>
+        <div id="list-ajay"></div>
+
+        <div class="tech-section">❓ Others/Unassigned <span class="count-badge" id="count-others">0</span></div>
+        <div id="list-others"></div>
+    </div>
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbx6nR-yRFeQ3InrKpBh2HBTXdrRLEcmQSkaQ_qeDidC2ZUJaMM8Zsana_Kk6T5QQ_g5/exec';
 
         async function load() {
-            const resp = await fetch(scriptURL + "?action=read");
-            const data = await resp.json();
-            const today = new Date().toLocaleDateString();
-            let html = "";
+            try {
+                const resp = await fetch(scriptURL + "?action=read");
+                const data = await resp.json();
+                const today = new Date().toLocaleDateString();
 
-            data.forEach(item => {
-                const itemDate = new Date(item.date).toLocaleDateString();
-                
-                // SHOW ONLY RECORDS FROM TODAY
-                if (itemDate === today) {
-                    const isDone = item.status === "Completed";
-                    const msg = `*RAMA ELECTRONICS SERVICE*%0A*Tech:* ${item.tech}%0A*Shop:* ${item.dealer}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Address:* ${item.address}%0A*Brand:* ${item.brand}%0A*Model:* ${item.model}%0A*Issue:* ${item.problem}`;
-                    
-                    html += `<div class="card ${isDone ? 'done' : ''}">
-                        ${isDone ? '<b style="color:green; float:right; font-size: 12px;">✅ COMPLETED</b>' : `<button class="done-btn" onclick="mark('${item.row}')">Mark Done</button>`}
-                        
-                        <span class="tech-badge">👤 Assigned Tech: ${item.tech || 'Waiting...'}</span>
-                        <span class="shop-tag">🏪 Dealer Shop: ${item.dealer || 'Direct Customer'}</span>
-                        
-                        <h3 style="margin:5px 0;">${item.name}</h3>
-                        <b style="color:#007bff; font-size:1.1em;">📞 ${item.phone}</b>
-                        
-                        <p style="font-size:14px; margin: 10px 0;">
-                            <b>Brand/Model:</b> ${item.brand} ${item.model}<br>
-                            <b>Pincode:</b> ${item.pincode}<br>
-                            <b>Address:</b> ${item.address}
-                        </p>
+                // Clear lists
+                const lists = {
+                    santosh: document.getElementById('list-santosh'),
+                    rakesh: document.getElementById('list-rakesh'),
+                    ajay: document.getElementById('list-ajay'),
+                    others: document.getElementById('list-others')
+                };
+                const counts = { santosh: 0, rakesh: 0, ajay: 0, others: 0 };
+                Object.values(lists).forEach(l => l.innerHTML = "");
 
-                        <div class="prob-box">
-                            <small style="color:#888;">CUSTOMER ISSUE:</small><br>
-                            <strong>${item.problem}</strong>
-                        </div>
+                data.forEach(item => {
+                    const itemFullDate = new Date(item.date);
+                    if (itemFullDate.toLocaleDateString() === today) {
+                        const isDone = item.status === "Completed";
+                        
+                        // Create Timestamp (e.g., 03:15 PM)
+                        const timeStr = itemFullDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        
+                        const msg = `*RAMA ELECTRONICS SERVICE*%0A*Tech:* ${item.tech}%0A*Shop:* ${item.dealer}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Address:* ${item.address}%0A*Issue:* ${item.problem}`;
+                        
+                        const cardHtml = `<div class="card ${isDone ? 'done' : ''}">
+                            <span class="time-badge">🕒 Registered: ${timeStr}</span>
+                            ${isDone ? '<b style="color:green; float:right; font-size: 12px;">✅ COMPLETED</b>' : `<button class="done-btn" onclick="mark('${item.row}')">Mark Done</button>`}
+                            
+                            <span class="shop-tag">🏪 Dealer Shop: ${item.dealer || 'Direct Customer'}</span>
+                            <h3 style="margin:5px 0; font-size: 18px;">${item.name}</h3>
+                            <b style="color:#007bff; font-size:1.1em;">📞 ${item.phone}</b>
+                            
+                            <p style="font-size:14px; margin: 10px 0;">
+                                <b>Brand/Model:</b> ${item.brand} ${item.model}<br>
+                                <b>Pincode:</b> ${item.pincode}<br>
+                                <b>Address:</b> ${item.address}
+                            </p>
 
-                        ${!isDone ? `<a href="https://wa.me/?text=${msg}" target="_blank" class="wa-btn">📲 WhatsApp to Tech Group</a>` : ''}
-                    </div>`;
+                            <div class="prob-box">
+                                <small style="color:#888;">CUSTOMER ISSUE:</small><br>
+                                <strong>${item.problem}</strong>
+                            </div>
+
+                            ${!isDone ? `<a href="https://wa.me/?text=${msg}" target="_blank" class="wa-btn">📲 WhatsApp to Tech</a>` : ''}
+                        </div>`;
+
+                        // Sorting Logic
+                        const tech = (item.tech || "").toUpperCase();
+                        if (tech.includes("SANTOSH")) { lists.santosh.innerHTML += cardHtml; counts.santosh++; }
+                        else if (tech.includes("RAKESH")) { lists.rakesh.innerHTML += cardHtml; counts.rakesh++; }
+                        else if (tech.includes("AJAY")) { lists.ajay.innerHTML += cardHtml; counts.ajay++; }
+                        else { lists.others.innerHTML += cardHtml; counts.others++; }
+                    }
+                });
+
+                // Set counts and empty messages
+                for (let key in counts) {
+                    document.getElementById('count-' + key).innerText = counts[key];
+                    if (counts[key] === 0) {
+                        lists[key].innerHTML = '<div class="empty-msg">No entries for this group today.</div>';
+                    }
                 }
-            });
-            document.getElementById('complaintList').innerHTML = html || "<h3 style='text-align:center;'>No entries for today yet!</h3>";
+            } catch (e) {
+                console.error("Error loading data", e);
+            }
         }
 
         async function mark(row) {
@@ -74,7 +124,10 @@
             await fetch(scriptURL + "?action=complete&row=" + row);
             load();
         }
+
         load();
+        // Auto-refresh every 3 minutes
+        setInterval(load, 180000);
     </script>
 </body>
 </html>
