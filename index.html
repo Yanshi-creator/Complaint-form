@@ -3,79 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Complaint Form | Heena Electronics</title>
+    <title>Lodge Complaint | Heena Electronics</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; padding: 15px; color: #333; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #004085; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
-        label { font-weight: bold; display: block; margin-top: 15px; font-size: 14px; }
+        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        label { font-weight: bold; display: block; margin-top: 15px; }
         input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { background: #007bff; color: white; padding: 15px; border: none; cursor: pointer; width: 100%; font-size: 18px; font-weight: bold; border-radius: 6px; margin-top: 25px; }
-        button:disabled { background: #ccc; }
+        button { background: #007bff; color: white; padding: 15px; border: none; width: 100%; font-size: 18px; border-radius: 6px; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <h2>Lodge a Complaint</h2>
-    <form id="complaintForm">
-        <label>Complaint From *</label>
-        <select name="userType" required>
-            <option value="Customer">Direct Customer</option>
-            <option value="Shop">Shop / Dealer</option>
-        </select>
-
-        <label>Customer Name *</label>
-        <input type="text" name="name" required>
-
-        <label>Phone Number *</label>
-        <input type="tel" name="phone" required>
-
-        <label>Address *</label>
-        <textarea name="address" rows="2" required></textarea>
-
-        <label>Pincode *</label>
-        <input type="text" name="pincode" required>
-
-        <label>Brand</label>
-        <input type="text" name="brand">
-
-        <label>Model Name/Number</label>
-        <input type="text" name="model">
-
-        <label>Problem Details (Issue)</label>
-        <textarea name="problem" rows="3" placeholder="Describe the fault here"></textarea>
-
-        <label>Dealer/Shop Name</label>
-        <input type="text" name="dealerName" placeholder="Enter Shop Name">
-
-        <label>Dealer Contact</label>
-        <input type="text" name="dealerContact">
-
-        <button type="submit" id="submitBtn">Submit Complaint</button>
+    <h2 style="text-align:center; color:#004085;">Complaint Form</h2>
+    <form id="f">
+        <label>Category</label>
+        <select name="userType"><option>Customer</option><option>Shop</option></select>
+        <label>Name</label><input type="text" name="name" required>
+        <label>Phone</label><input type="tel" name="phone" required>
+        <label>Address</label><textarea name="address" required></textarea>
+        <label>Pincode</label><input type="text" name="pincode" required>
+        <label>Brand</label><input type="text" name="brand">
+        <label>Model</label><input type="text" name="model">
+        <label>Issue/Problem</label><textarea name="problem" placeholder="Describe the fault"></textarea>
+        <label>Dealer Shop Name</label><input type="text" name="dealerName">
+        <label>Dealer Contact</label><input type="text" name="dealerContact">
+        <button type="submit" id="b">Submit Complaint</button>
     </form>
 </div>
-
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxkdcbimAHY0S2pUqb4vBnRJrXewJGV2vlzXSUUxwaweCkMV6jjieSCj9MxzF29o5pA/exec';
-    const form = document.getElementById('complaintForm');
-    const btn = document.getElementById('submitBtn');
-
-    form.addEventListener('submit', e => {
+    const url = https://script.google.com/macros/s/AKfycbyi2iLnq4hc-r-PAVE6MqMBNNG_MHQ_KyUjtJ6KBGRRYyWTlJM-7eIsiJJDtGWcZKTR/exec';
+    document.getElementById('f').addEventListener('submit', e => {
         e.preventDefault();
-        btn.disabled = true;
-        btn.innerText = "Submitting...";
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(() => {
-                alert("Success!");
-                form.reset();
-                btn.disabled = false;
-                btn.innerText = "Submit Complaint";
-            })
-            .catch(() => {
-                alert("Error! Try again.");
-                btn.disabled = false;
-            });
+        document.getElementById('b').innerText = "Sending...";
+        fetch(url, { method: 'POST', body: new FormData(e.target)})
+        .then(() => { alert("Success!"); location.reload(); });
     });
 </script>
 </body>
