@@ -9,6 +9,7 @@
         .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .logo { text-align: center; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 15px; }
         label { font-weight: bold; display: block; margin-top: 15px; font-size: 14px; }
+        .sub-label { font-weight: normal; font-size: 12px; color: #666; }
         input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
         button { background: #007bff; color: white; padding: 15px; border: none; width: 100%; font-size: 18px; font-weight: bold; border-radius: 6px; margin-top: 25px; cursor: pointer; }
         .heena-badge { background: #f8d7da; color: #dc3545; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; display: inline-block; margin-top: 5px; }
@@ -41,7 +42,8 @@
         
         <label>Problem Details *</label><textarea name="problem" placeholder="What is the issue?" required></textarea>
         
-        <label>Dealer Shop Name *</label><input type="text" name="dealerName" required>
+        <label>Dealer Shop Name * <span class="sub-label">(Type NA if not applicable)</span></label>
+        <input type="text" name="dealerName" required>
         
         <button type="submit" id="subBtn">Submit Complaint</button>
     </form>
