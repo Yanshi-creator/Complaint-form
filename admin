@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Portal | Heena Electronics</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 15px; margin: 0; }
+        .login-container { max-width: 350px; margin: 100px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        .hidden { display: none; }
+        .card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 10px; border-left: 8px solid #007bff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
+        .card.New { border-left-color: #ffc107; } /* New Complaints */
+        .card.Complain { border-left-color: #17a2b8; } /* Record Group */
+        .card.AJAY { border-left-color: #6610f2; } /* Ajay Group */
+        
+        h2 { color: #333; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .login-btn { background: #007bff; color: white; }
+        .wa-btn { background: #25D366; color: white; text-decoration: none; display: inline-block; padding: 10px; border-radius: 5px; margin-top: 10px; width: 100%; text-align: center; box-sizing: border-box; }
+        .done-btn { background: #dc3545; color: white; width: auto; padding: 5px 15px; font-size: 12px; position: absolute; top: 10px; right: 10px; }
+        .group-tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; background: #eee; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <div id="loginBox" class="login-container">
+        <h2>Staff Login</h2>
+        <input type="text" id="user" placeholder="Staff ID">
+        <input type="password" id="pass" placeholder="Password">
+        <button class="login-btn" onclick="authenticate()">Enter Portal</button>
+    </div>
+
+    <div id="adminPanel" class="hidden">
+        <div style="display:flex; justify-content: space-between; align-items: center;">
+            <h2>Pending Complaints</h2>
+            <button onclick="location.reload()" style="width:auto; padding: 5px 10px;">Refresh</button>
+        </div>
+        <hr>
+        <div id="listContainer">Loading data from Excel...</div>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwgOEDLTDhVkbDLpMP6VJTHY92FEUgK5yEBUbqZj9SB1uvrh_TmIo50OnUcy2x0m6u5/exec';
+
+        function authenticate() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            // You can change these credentials
+            if(u === "heena" && p === "admin777") {
+                document.getElementById('loginBox').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                fetchComplaints();
+            } else {
+                alert("Wrong ID or Password");
+            }
+        }
+
+        async function fetchComplaints() {
+            const container = document.getElementById('listContainer');
+            try {
+                const response = await fetch(scriptURL + "?action=read");
+                const data = await response.json();
+                
+                if (data.length === 0) {
+                    container.innerHTML = "<h3>No pending complaints! ✅</h3>";
+                    return;
+                }
+
+                let html = "";
+                data.forEach(item => {
+                    // Create the WhatsApp Message
+                    const waMessage = `*NEW COMPLAINT*%0A--------------------------%0A*Group:* ${item.group}%0A*Customer:* ${item.name}%0A*Contact:* ${item.phone}%0A*Area:* ${item.pincode}%0A*Address:* ${item.address}%0A*Issue:* ${item.problem}`;
+                    
+                    // Simple logic to color-code cards based on group
+                    const groupClass = item.group.split(' ')[0]; 
+
+                    html += `
+                        <div class="card ${groupClass}">
+                            <button class="done-btn" onclick="markDone(${item.row})">Mark Done</button>
+                            <span class="group-tag">${item.group}</span><br>
+                            <strong>${item.name}</strong><br>
+                            <span>📞 ${item.phone}</span><br>
+                            <p style="font-size:14px; color:#555;">${item.address}</p>
+                            <p style="background:#fff9c4; padding:5px; border-radius:4px;"><b>Issue:</b> ${item.problem}</p>
+                            <a href="https://wa.me/?text=${waMessage}" target="_blank" class="wa-btn">📲 Share to WhatsApp Group</a>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch (e) {
+                container.innerHTML = "Error loading data. Make sure you deployed your script as 'Anyone'.";
+            }
+        }
+
+        async function markDone(rowId) {
+            if(!confirm("Mark this complaint as completed in Excel?")) return;
+            
+            const btn = event.target;
+            btn.innerText = "...";
+            
+            await fetch(scriptURL + "?action=complete&row=" + rowId);
+            alert("Updated! Complaint moved to completed status.");
+            fetchComplaints();
+        }
+    </script>
+</body>
+</html>
