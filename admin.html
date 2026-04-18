@@ -2,132 +2,86 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Dashboard | Rama Electronics</title>
+    <title>Rama Staff Portal | Tasks</title>
     <style>
         body { font-family: sans-serif; background: #f0f2f5; padding: 10px; margin: 0; }
         .header { background: #004085; color: white; padding: 15px; text-align: center; margin-bottom: 20px; }
-        
-        /* Technician Group Styling */
-        .tech-section { background: #343a40; color: white; padding: 10px; border-radius: 8px; margin: 25px 0 10px 0; text-transform: uppercase; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
-        .count-badge { background: #ffc107; color: #000; padding: 2px 8px; border-radius: 10px; font-weight: bold; font-size: 12px; }
-        
+        .tech-section { background: #343a40; color: white; padding: 10px; border-radius: 8px; margin: 25px 0 10px 0; text-transform: uppercase; font-size: 13px; display: flex; justify-content: space-between; }
         .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-top: 5px solid #007bff; position: relative; }
-        .done { opacity: 0.7; border-top-color: #28a745; background: #f9fff9; }
-        
-        /* Timestamp Styling */
-        .time-badge { font-size: 11px; color: #666; font-weight: bold; margin-bottom: 5px; display: block; }
-        
-        .tech-badge { background: #e3f2fd; color: #007bff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .shop-tag { color: #d32f2f; font-weight: bold; display: block; margin: 5px 0; font-size: 14px; }
-        .prob-box { background: #fff9c4; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #fbc02d; font-size: 14px; }
-        .wa-btn { background: #25D366; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 8px; margin-top: 15px; font-weight: bold; }
-        .done-btn { background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 6px; position: absolute; top: 15px; right: 15px; cursor: pointer; font-weight: bold; }
-        .empty-msg { text-align: center; color: #888; font-style: italic; padding: 15px; background: #fff; border-radius: 8px; border: 1px dashed #ccc; }
+        .status-badge { float: right; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .status-Open { background: #fff3cd; color: #856404; }
+        .status-Completed { background: #d4edda; color: #155724; }
+        .status-Cancelled { background: #f8d7da; color: #721c24; }
+        .remark-input { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
+        .btn-row { display: flex; gap: 5px; margin-top: 10px; }
+        .c-btn { flex: 1; padding: 10px; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .wa-btn { background: #25D366; color: white; text-decoration: none; display: block; text-align: center; padding: 10px; border-radius: 8px; margin-top: 10px; font-weight: bold; font-size: 13px; }
     </style>
 </head>
 <body>
     <div class="header">
         <h2 style="margin:0;">RAMA ELECTRONICS</h2>
-        <div style="font-size:11px; opacity:0.8; text-transform: uppercase;">A Unit of Heena Electronics Pvt Ltd</div>
+        <div style="font-size:11px; opacity:0.8;">PENDING & DAILY LOG</div>
     </div>
 
     <div id="dashboard" style="max-width: 550px; margin: auto;">
-        <div class="tech-section">👤 Santosh Bhai <span class="count-badge" id="count-santosh">0</span></div>
-        <div id="list-santosh"></div>
-
-        <div class="tech-section">👤 Rakesh Bhai <span class="count-badge" id="count-rakesh">0</span></div>
-        <div id="list-rakesh"></div>
-
-        <div class="tech-section">👤 Ajay Bhai <span class="count-badge" id="count-ajay">0</span></div>
-        <div id="list-ajay"></div>
-
-        <div class="tech-section">❓ Others/Unassigned <span class="count-badge" id="count-others">0</span></div>
-        <div id="list-others"></div>
+        <div class="tech-section">👤 Santosh <span id="count-santosh">0</span></div><div id="list-santosh"></div>
+        <div class="tech-section">👤 Rakesh <span id="count-rakesh">0</span></div><div id="list-rakesh"></div>
+        <div class="tech-section">👤 Ajay <span id="count-ajay">0</span></div><div id="list-ajay"></div>
+        <div class="tech-section">❓ Unassigned <span id="count-others">0</span></div><div id="list-others"></div>
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbx6nR-yRFeQ3InrKpBh2HBTXdrRLEcmQSkaQ_qeDidC2ZUJaMM8Zsana_Kk6T5QQ_g5/exec';
+        const scriptURL = 'PASTE_YOUR_SCRIPT_URL_HERE';
 
         async function load() {
-            try {
-                const resp = await fetch(scriptURL + "?action=read");
-                const data = await resp.json();
-                const today = new Date().toLocaleDateString();
+            const resp = await fetch(scriptURL + "?action=read");
+            const data = await resp.json();
+            const lists = { santosh: document.getElementById('list-santosh'), rakesh: document.getElementById('list-rakesh'), ajay: document.getElementById('list-ajay'), others: document.getElementById('list-others') };
+            const counts = { santosh: 0, rakesh: 0, ajay: 0, others: 0 };
+            Object.values(lists).forEach(l => l.innerHTML = "");
 
-                // Clear lists
-                const lists = {
-                    santosh: document.getElementById('list-santosh'),
-                    rakesh: document.getElementById('list-rakesh'),
-                    ajay: document.getElementById('list-ajay'),
-                    others: document.getElementById('list-others')
-                };
-                const counts = { santosh: 0, rakesh: 0, ajay: 0, others: 0 };
-                Object.values(lists).forEach(l => l.innerHTML = "");
+            data.forEach(item => {
+                const isPending = item.status === "Open";
+                const cardHtml = `
+                <div class="card" style="border-top-color: ${isPending ? '#007bff' : '#6c757d'}">
+                    <span class="status-badge status-${item.status}">${item.status.toUpperCase()}</span>
+                    <span style="font-size:11px; color:#888;">${new Date(item.date).toLocaleDateString()}</span>
+                    <h3 style="margin:5px 0;">${item.name}</h3>
+                    <b>📞 ${item.phone}</b>
+                    <p style="font-size:13px; margin:5px 0;">${item.address}</p>
+                    <div style="background:#f8f9fa; padding:8px; border-radius:4px; font-size:12px;"><b>Issue:</b> ${item.problem}</div>
+                    
+                    ${isPending ? `
+                        <input type="text" id="rem-${item.row}" class="remark-input" placeholder="Enter remarks/reason...">
+                        <div class="btn-row">
+                            <button class="c-btn" style="background:#28a745" onclick="update('${item.row}', 'Completed')">Complete</button>
+                            <button class="c-btn" style="background:#dc3545" onclick="update('${item.row}', 'Cancelled')">Cancel</button>
+                        </div>
+                        <a href="https://wa.me/?text=Job:${item.name}" class="wa-btn">WhatsApp</a>
+                    ` : `<div style="margin-top:10px; font-size:13px; color:#28a745;"><b>Remark:</b> ${item.remarks || 'No remarks'}</div>`}
+                </div>`;
 
-                data.forEach(item => {
-                    const itemFullDate = new Date(item.date);
-                    if (itemFullDate.toLocaleDateString() === today) {
-                        const isDone = item.status === "Completed";
-                        
-                        // Create Timestamp (e.g., 03:15 PM)
-                        const timeStr = itemFullDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        
-                        const msg = `*RAMA ELECTRONICS SERVICE*%0A*Tech:* ${item.tech}%0A*Shop:* ${item.dealer}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Address:* ${item.address}%0A*Issue:* ${item.problem}`;
-                        
-                        const cardHtml = `<div class="card ${isDone ? 'done' : ''}">
-                            <span class="time-badge">🕒 Registered: ${timeStr}</span>
-                            ${isDone ? '<b style="color:green; float:right; font-size: 12px;">✅ COMPLETED</b>' : `<button class="done-btn" onclick="mark('${item.row}')">Mark Done</button>`}
-                            
-                            <span class="shop-tag">🏪 Dealer Shop: ${item.dealer || 'Direct Customer'}</span>
-                            <h3 style="margin:5px 0; font-size: 18px;">${item.name}</h3>
-                            <b style="color:#007bff; font-size:1.1em;">📞 ${item.phone}</b>
-                            
-                            <p style="font-size:14px; margin: 10px 0;">
-                                <b>Brand/Model:</b> ${item.brand} ${item.model}<br>
-                                <b>Pincode:</b> ${item.pincode}<br>
-                                <b>Address:</b> ${item.address}
-                            </p>
+                const tech = (item.tech || "").toUpperCase();
+                if (tech.includes("SANTOSH")) { lists.santosh.innerHTML += cardHtml; counts.santosh++; }
+                else if (tech.includes("RAKESH")) { lists.rakesh.innerHTML += cardHtml; counts.rakesh++; }
+                else if (tech.includes("AJAY")) { lists.ajay.innerHTML += cardHtml; counts.ajay++; }
+                else { lists.others.innerHTML += cardHtml; counts.others++; }
+            });
 
-                            <div class="prob-box">
-                                <small style="color:#888;">CUSTOMER ISSUE:</small><br>
-                                <strong>${item.problem}</strong>
-                            </div>
-
-                            ${!isDone ? `<a href="https://wa.me/?text=${msg}" target="_blank" class="wa-btn">📲 WhatsApp to Tech</a>` : ''}
-                        </div>`;
-
-                        // Sorting Logic
-                        const tech = (item.tech || "").toUpperCase();
-                        if (tech.includes("SANTOSH")) { lists.santosh.innerHTML += cardHtml; counts.santosh++; }
-                        else if (tech.includes("RAKESH")) { lists.rakesh.innerHTML += cardHtml; counts.rakesh++; }
-                        else if (tech.includes("AJAY")) { lists.ajay.innerHTML += cardHtml; counts.ajay++; }
-                        else { lists.others.innerHTML += cardHtml; counts.others++; }
-                    }
-                });
-
-                // Set counts and empty messages
-                for (let key in counts) {
-                    document.getElementById('count-' + key).innerText = counts[key];
-                    if (counts[key] === 0) {
-                        lists[key].innerHTML = '<div class="empty-msg">No entries for this group today.</div>';
-                    }
-                }
-            } catch (e) {
-                console.error("Error loading data", e);
-            }
+            for (let key in counts) document.getElementById('count-' + key).innerText = counts[key];
         }
 
-        async function mark(row) {
-            if(!confirm("Mark this job as Finished?")) return;
-            const btn = event.target;
-            btn.innerText = "...";
-            await fetch(scriptURL + "?action=complete&row=" + row);
+        async function update(row, status) {
+            const remark = document.getElementById('rem-' + row).value;
+            if(!remark) return alert("Please enter a remark first!");
+            if(!confirm("Are you sure?")) return;
+            
+            await fetch(`${scriptURL}?action=updateStatus&row=${row}&status=${status}&remarks=${encodeURIComponent(remark)}`);
+            alert("Updated!");
             load();
         }
-
         load();
-        // Auto-refresh every 3 minutes
-        setInterval(load, 180000);
     </script>
 </body>
 </html>
