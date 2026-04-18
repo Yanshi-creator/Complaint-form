@@ -2,56 +2,76 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Dashboard</title>
+    <title>Staff Dashboard | Rama Electronics</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 10px; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 10px; margin: 0; }
+        .header { background: #004085; color: white; padding: 15px; text-align: center; margin-bottom: 20px; }
         .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-top: 5px solid #007bff; position: relative; }
         .done { opacity: 0.7; border-top-color: #28a745; background: #f9fff9; }
         .tech-badge { background: #e3f2fd; color: #007bff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .shop-tag { color: #d32f2f; font-weight: bold; display: block; margin: 5px 0; }
-        .prob { background: #fff9c4; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #fbc02d; }
-        .wa-btn { background: #25D366; color: white; text-decoration: none; display: block; text-align: center; padding: 10px; border-radius: 8px; margin-top: 10px; font-weight: bold; }
-        .done-btn { background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 6px; position: absolute; top: 15px; right: 15px; cursor: pointer; font-weight: bold; }
+        .shop-tag { color: #d32f2f; font-weight: bold; display: block; margin: 5px 0; font-size: 14px; }
+        .prob-box { background: #fff9c4; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #fbc02d; font-size: 14px; }
+        .wa-btn { background: #25D366; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 8px; margin-top: 15px; font-weight: bold; }
+        .done-btn { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 6px; position: absolute; top: 15px; right: 15px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h2 style="text-align:center;">Daily Complaint Log</h2>
-    <div id="list">Loading...</div>
+    <div class="header">
+        <h2 style="margin:0;">RAMA ELECTRONICS</h2>
+        <div style="font-size:11px; opacity:0.8; text-transform: uppercase;">A Unit of Heena Electronics Pvt Ltd</div>
+    </div>
+
+    <div id="complaintList" style="max-width: 550px; margin: auto;">Loading Daily Records...</div>
 
     <script>
-        const url = 'https://script.google.com/macros/s/AKfycbyi2iLnq4hc-r-PAVE6MqMBNNG_MHQ_KyUjtJ6KBGRRYyWTlJM-7eIsiJJDtGWcZKTR/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxkdcbimAHY0S2pUqb4vBnRJrXewJGV2vlzXSUUxwaweCkMV6jjieSCj9MxzF29o5pA/exec';
 
         async function load() {
-            const resp = await fetch(url + "?action=read");
+            const resp = await fetch(scriptURL + "?action=read");
             const data = await resp.json();
             const today = new Date().toLocaleDateString();
             let html = "";
 
             data.forEach(item => {
                 const itemDate = new Date(item.date).toLocaleDateString();
-                // ONLY SHOWS ENTRIES FROM TODAY
+                
+                // SHOW ONLY RECORDS FROM TODAY
                 if (itemDate === today) {
                     const isDone = item.status === "Completed";
-                    const msg = `*JOB*%0A*Tech:* ${item.tech}%0A*Shop:* ${item.dealer}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Issue:* ${item.problem}`;
+                    const msg = `*RAMA ELECTRONICS SERVICE*%0A*Tech:* ${item.tech}%0A*Shop:* ${item.dealer}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Address:* ${item.address}%0A*Brand:* ${item.brand}%0A*Model:* ${item.model}%0A*Issue:* ${item.problem}`;
                     
                     html += `<div class="card ${isDone ? 'done' : ''}">
-                        ${isDone ? '<b style="color:green; float:right;">✅ COMPLETED</b>' : `<button class="done-btn" onclick="mark('${item.row}')">Mark Done</button>`}
-                        <span class="tech-badge">👤 Tech: ${item.tech}</span>
-                        <span class="shop-tag">🏪 Shop: ${item.dealer || 'Direct'}</span>
+                        ${isDone ? '<b style="color:green; float:right; font-size: 12px;">✅ COMPLETED</b>' : `<button class="done-btn" onclick="mark('${item.row}')">Mark Done</button>`}
+                        
+                        <span class="tech-badge">👤 Assigned Tech: ${item.tech || 'Waiting...'}</span>
+                        <span class="shop-tag">🏪 Dealer Shop: ${item.dealer || 'Direct Customer'}</span>
+                        
                         <h3 style="margin:5px 0;">${item.name}</h3>
                         <b style="color:#007bff; font-size:1.1em;">📞 ${item.phone}</b>
-                        <p style="font-size:14px;"><b>Model:</b> ${item.brand} ${item.model}<br><b>Area:</b> ${item.pincode}</p>
-                        <div class="prob"><b>Problem:</b> ${item.problem}</div>
-                        ${!isDone ? `<a href="https://wa.me/?text=${msg}" target="_blank" class="wa-btn">📲 WhatsApp Dispatch</a>` : ''}
+                        
+                        <p style="font-size:14px; margin: 10px 0;">
+                            <b>Brand/Model:</b> ${item.brand} ${item.model}<br>
+                            <b>Pincode:</b> ${item.pincode}<br>
+                            <b>Address:</b> ${item.address}
+                        </p>
+
+                        <div class="prob-box">
+                            <small style="color:#888;">CUSTOMER ISSUE:</small><br>
+                            <strong>${item.problem}</strong>
+                        </div>
+
+                        ${!isDone ? `<a href="https://wa.me/?text=${msg}" target="_blank" class="wa-btn">📲 WhatsApp to Tech Group</a>` : ''}
                     </div>`;
                 }
             });
-            document.getElementById('list').innerHTML = html || "No entries for today.";
+            document.getElementById('complaintList').innerHTML = html || "<h3 style='text-align:center;'>No entries for today yet!</h3>";
         }
 
         async function mark(row) {
-            if(!confirm("Mark this job as completed?")) return;
-            await fetch(url + "?action=complete&row=" + row);
+            if(!confirm("Mark this job as Finished?")) return;
+            const btn = event.target;
+            btn.innerText = "...";
+            await fetch(scriptURL + "?action=complete&row=" + row);
             load();
         }
         load();
