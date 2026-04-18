@@ -3,20 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Complaint Form</title>
+    <title>Service Complaint Form | Heena Electronics</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; padding: 15px; color: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; padding: 15px; color: #333; }
         .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #004085; margin-bottom: 20px; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        h2 { text-align: center; color: #004085; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
         label { font-weight: bold; display: block; margin-top: 15px; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        input:focus, select:focus, textarea:focus { border-color: #007bff; outline: none; box-shadow: 0 0 5px rgba(0,123,255,0.2); }
-        .required { color: red; }
-        button { background: #007bff; color: white; padding: 15px; border: none; cursor: pointer; width: 100%; font-size: 18px; font-weight: bold; border-radius: 6px; margin-top: 25px; transition: background 0.3s; }
-        button:hover { background: #0056b3; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        .call-container { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
-        .call-btn { background: #28a745; text-decoration: none; display: inline-block; color: white; border-radius: 50px; padding: 12px 30px; font-weight: bold; font-size: 16px; margin-top: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { background: #007bff; color: white; padding: 15px; border: none; cursor: pointer; width: 100%; font-size: 18px; font-weight: bold; border-radius: 6px; margin-top: 25px; }
+        button:disabled { background: #ccc; }
     </style>
 </head>
 <body>
@@ -24,75 +19,64 @@
 <div class="container">
     <h2>Lodge a Complaint</h2>
     <form id="complaintForm">
-        <label>Complaint From <span class="required">*</span></label>
+        <label>Complaint From *</label>
         <select name="userType" required>
-            <option value="">-- Select Category --</option>
             <option value="Customer">Direct Customer</option>
             <option value="Shop">Shop / Dealer</option>
         </select>
 
-        <label>Customer Name <span class="required">*</span></label>
-        <input type="text" name="name" placeholder="Enter full name" required>
+        <label>Customer Name *</label>
+        <input type="text" name="name" required>
 
-        <label>Phone Number <span class="required">*</span></label>
-        <input type="tel" name="phone" placeholder="Enter mobile number" required>
+        <label>Phone Number *</label>
+        <input type="tel" name="phone" required>
 
-        <label>Address <span class="required">*</span></label>
-        <textarea name="address" rows="2" placeholder="Enter complete address" required></textarea>
+        <label>Address *</label>
+        <textarea name="address" rows="2" required></textarea>
 
-        <label>Pincode <span class="required">*</span></label>
-        <input type="text" name="pincode" placeholder="6-digit pincode" required>
+        <label>Pincode *</label>
+        <input type="text" name="pincode" required>
 
         <label>Brand</label>
-        <input type="text" name="brand" placeholder="e.g., Voltas">
+        <input type="text" name="brand">
 
         <label>Model Name/Number</label>
-        <input type="text" name="model" placeholder="Model details">
+        <input type="text" name="model">
 
-        <label>Problem Details</label>
-        <textarea name="problem" rows="3" placeholder="Describe the issue you are facing"></textarea>
+        <label>Problem Details (Issue)</label>
+        <textarea name="problem" rows="3" placeholder="Describe the fault here"></textarea>
 
-        <label>Dealer Name</label>
-        <input type="text" name="dealerName" placeholder="Shop name where purchased">
+        <label>Dealer/Shop Name</label>
+        <input type="text" name="dealerName" placeholder="Enter Shop Name">
 
         <label>Dealer Contact</label>
-        <input type="text" name="dealerContact" placeholder="Dealer phone number">
+        <input type="text" name="dealerContact">
 
         <button type="submit" id="submitBtn">Submit Complaint</button>
     </form>
-
-    <div class="call-container">
-        <p style="margin-bottom: 5px;">Need urgent support?</p>
-        <a href="tel:+919624870096" class="call-btn">📞 Call +91 96248 70096</a>
-    </div>
 </div>
 
 <script>
-    // YOUR NEW URL INTEGRATED HERE
-    const scriptURL = 'https://script.google.com/macros/s/AKfycby8KZJPwwWV9HKU7ymiWtwQ28a1dBG2x2l76lIbrmR5feX4LVNB3-0h1MYqTqdPhH1C/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxkdcbimAHY0S2pUqb4vBnRJrXewJGV2vlzXSUUxwaweCkMV6jjieSCj9MxzF29o5pA/exec';
     const form = document.getElementById('complaintForm');
     const btn = document.getElementById('submitBtn');
 
     form.addEventListener('submit', e => {
         e.preventDefault();
         btn.disabled = true;
-        btn.innerText = "Submitting Data...";
-
+        btn.innerText = "Submitting...";
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(response => {
-                alert("Complaint Registered Successfully! Our team will contact you soon.");
+            .then(() => {
+                alert("Success!");
                 form.reset();
                 btn.disabled = false;
                 btn.innerText = "Submit Complaint";
             })
-            .catch(error => {
-                console.error('Error!', error.message);
-                alert("Submission failed. Please check your internet or call support.");
+            .catch(() => {
+                alert("Error! Try again.");
                 btn.disabled = false;
-                btn.innerText = "Submit Complaint";
             });
     });
 </script>
-
 </body>
 </html>
