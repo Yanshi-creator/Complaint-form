@@ -3,40 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lodge Complaint | Heena Electronics</title>
+    <title>Rama Electronics - Service Form</title>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        label { font-weight: bold; display: block; margin-top: 15px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 15px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .logo-section { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-top: 15px; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { background: #007bff; color: white; padding: 15px; border: none; width: 100%; font-size: 18px; border-radius: 6px; margin-top: 20px; cursor: pointer; }
+        button { background: #007bff; color: white; padding: 15px; border: none; width: 100%; font-size: 18px; font-weight: bold; border-radius: 6px; margin-top: 25px; cursor: pointer; }
+        .heena-badge { background: #f8d7da; color: #dc3545; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; display: inline-block; margin-top: 5px; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h2 style="text-align:center; color:#004085;">Complaint Form</h2>
-    <form id="f">
-        <label>Category</label>
-        <select name="userType"><option>Customer</option><option>Shop</option></select>
-        <label>Name</label><input type="text" name="name" required>
-        <label>Phone</label><input type="tel" name="phone" required>
-        <label>Address</label><textarea name="address" required></textarea>
-        <label>Pincode</label><input type="text" name="pincode" required>
-        <label>Brand</label><input type="text" name="brand">
-        <label>Model</label><input type="text" name="model">
-        <label>Issue/Problem</label><textarea name="problem" placeholder="Describe the fault"></textarea>
-        <label>Dealer Shop Name</label><input type="text" name="dealerName">
-        <label>Dealer Contact</label><input type="text" name="dealerContact">
-        <button type="submit" id="b">Submit Complaint</button>
+    <div class="logo-section">
+        <h1 style="margin:0; color:#004085;">RAMA</h1>
+        <p style="margin:0; font-size:14px; color:#666; text-transform:uppercase; letter-spacing:1px;">Electronics Service</p>
+        <div class="heena-badge">A UNIT OF: HEENA ELECTRONICS PVT LTD</div>
+    </div>
+
+    <form id="complaintForm">
+        <label>Complaint From *</label>
+        <select name="userType">
+            <option value="Customer">Direct Customer</option>
+            <option value="Shop">Shop / Dealer</option>
+        </select>
+        
+        <label>Customer Name *</label>
+        <input type="text" name="name" placeholder="Full Name" required>
+        
+        <label>Phone Number *</label>
+        <input type="tel" name="phone" placeholder="Mobile Number" required>
+        
+        <label>Full Address *</label>
+        <textarea name="address" rows="2" placeholder="House No, Area, Landmark" required></textarea>
+        
+        <label>Pincode *</label>
+        <input type="text" name="pincode" placeholder="6-digit Pincode" required>
+        
+        <label>Device Brand</label>
+        <input type="text" name="brand" placeholder="e.g. Voltas, Samsung">
+
+        <label>Model Name/Number</label>
+        <input type="text" name="model" placeholder="e.g. 1.5 Ton Split">
+
+        <label>Problem Details (Issue)</label>
+        <textarea name="problem" placeholder="Describe the fault here (e.g. Not cooling)"></textarea>
+        
+        <label>Dealer Shop Name (If any)</label>
+        <input type="text" name="dealerName" placeholder="e.g. Heena Electronics">
+        
+        <label>Dealer Contact</label>
+        <input type="text" name="dealerContact" placeholder="Dealer phone number">
+        
+        <button type="submit" id="submitBtn">Submit Complaint</button>
     </form>
 </div>
+
 <script>
-    const url = https://script.google.com/macros/s/AKfycbyi2iLnq4hc-r-PAVE6MqMBNNG_MHQ_KyUjtJ6KBGRRYyWTlJM-7eIsiJJDtGWcZKTR/exec';
-    document.getElementById('f').addEventListener('submit', e => {
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxkdcbimAHY0S2pUqb4vBnRJrXewJGV2vlzXSUUxwaweCkMV6jjieSCj9MxzF29o5pA/exec';
+    const form = document.getElementById('complaintForm');
+    form.addEventListener('submit', e => {
         e.preventDefault();
-        document.getElementById('b').innerText = "Sending...";
-        fetch(url, { method: 'POST', body: new FormData(e.target)})
-        .then(() => { alert("Success!"); location.reload(); });
+        document.getElementById('submitBtn').innerText = "Submitting Data...";
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(() => { 
+            alert("Complaint Registered Successfully! Our team will contact you soon."); 
+            form.reset(); 
+            location.reload(); 
+        })
+        .catch(() => alert("Error, please check internet and try again!"));
     });
 </script>
 </body>
