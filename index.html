@@ -22,26 +22,26 @@
         <div class="heena-badge">A UNIT OF HEENA ELECTRONICS PVT LTD</div>
     </div>
     <form id="complaintForm">
-        <label>Complaint Type</label>
-        <select name="userType"><option>Customer</option><option>Shop</option></select>
+        <label>Complaint Type *</label>
+        <select name="userType" required><option>Customer</option><option>Shop</option></select>
         
-        <label>Customer Name</label><input type="text" name="name" required>
+        <label>Customer Name *</label><input type="text" name="name" required>
         
-        <label>Phone Number</label><input type="tel" name="phone" required>
+        <label>Phone Number *</label><input type="tel" name="phone" required>
         
-        <label>Full Address</label><textarea name="address" required></textarea>
+        <label>Full Address *</label><textarea name="address" required></textarea>
         
-        <label>Pincode</label><input type="text" name="pincode" required>
+        <label>Pincode *</label><input type="text" name="pincode" required>
         
-        <label>Device Details</label>
+        <label>Device Details *</label>
         <div style="display:flex; gap:10px;">
-            <input type="text" name="brand" placeholder="Brand">
-            <input type="text" name="model" placeholder="Model">
+            <input type="text" name="brand" placeholder="Brand" required>
+            <input type="text" name="model" placeholder="Model" required>
         </div>
         
-        <label>Problem Details</label><textarea name="problem" placeholder="What is the issue?"></textarea>
+        <label>Problem Details *</label><textarea name="problem" placeholder="What is the issue?" required></textarea>
         
-        <label>Dealer Shop Name (Optional)</label><input type="text" name="dealerName">
+        <label>Dealer Shop Name *</label><input type="text" name="dealerName" required>
         
         <button type="submit" id="subBtn">Submit Complaint</button>
     </form>
