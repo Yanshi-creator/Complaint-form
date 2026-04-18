@@ -5,87 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heena Electronics Admin</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 15px; margin: 0; }
-        .header { background: #004085; color: white; padding: 15px; text-align: center; border-radius: 0 0 15px 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; border-top: 6px solid #007bff; }
-        .tech-tag { background: #e7f3ff; color: #007bff; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
-        .shop-label { color: #dc3545; font-weight: bold; font-size: 13px; display: block; margin-bottom: 5px; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; font-size: 14px; border-top: 1px solid #eee; padding-top: 10px; }
-        .label { color: #666; font-size: 11px; text-transform: uppercase; display: block; }
-        .problem-section { background: #fff9c4; padding: 12px; border-radius: 8px; border-left: 4px solid #fbc02d; margin: 15px 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 10px; margin: 0; }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-top: 6px solid #007bff; position: relative; }
+        .tech-badge { background: #e3f2fd; color: #007bff; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        .shop-name { color: #d32f2f; font-weight: bold; font-size: 16px; display: block; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; font-size: 14px; }
+        .label { color: #888; font-size: 11px; text-transform: uppercase; display: block; }
+        .problem-section { background: #fff9c4; padding: 12px; border-radius: 8px; border-left: 5px solid #fbc02d; margin: 15px 0; }
         .wa-btn { background: #25D366; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 8px; font-weight: bold; }
-        .done-btn { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; position: absolute; top: 15px; right: 15px; cursor: pointer; }
+        .done-btn { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; position: absolute; top: 15px; right: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h2 style="margin:0;">Staff Portal</h2>
-    <small>Heena Electronics Dashboard</small>
-</div>
+    <h2 style="text-align:center; color:#004085;">Heena Staff Portal</h2>
+    <div id="complaintList" style="max-width: 550px; margin: auto;">Loading Complaints...</div>
 
-<div id="complaintList" style="max-width: 600px; margin: auto;">
-    <p style="text-align: center;">Loading Data from Excel...</p>
-</div>
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyt1hLjwrPqSzYeYLTRm-M_ix715_b4fqKBhmDqoTKdZHjabwIcYZ3cfcuvvdUuRPb9/exec';
 
-<script>
-    // UPDATED WITH YOUR NEWEST URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxemkueO9HlOsz-_SYZZvh_o9Nw18Kt3_kAsl9W9lGq5GhIBX6Vto0GZ9ZH0tWYg28c/exec';
+        async function fetchList() {
+            try {
+                const resp = await fetch(scriptURL + "?action=read");
+                const data = await resp.json();
+                let html = "";
+                data.forEach(item => {
+                    const waMsg = `*JOB DETAILS*%0A*Tech:* ${item.tech}%0A*Shop:* ${item.dealer}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Address:* ${item.address}%0A*Issue:* ${item.problem}`;
 
-    async function fetchList() {
-        const container = document.getElementById('complaintList');
-        try {
-            const resp = await fetch(scriptURL + "?action=read");
-            const data = await resp.json();
-            
-            let html = "";
-            data.forEach(item => {
-                const waMsg = `*NEW COMPLAINT*%0A--------------------------%0A*Assign:* ${item.tech}%0A*Shop/Dealer:* ${item.dealer}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Address:* ${item.address}%0A*Issue:* ${item.problem}`;
+                    html += `
+                    <div class="card">
+                        <button class="done-btn" onclick="markDone(${item.row})">Mark Done</button>
+                        <span class="tech-badge">👤 Tech: ${item.tech || 'Waiting for Assignment...'}</span>
+                        
+                        <span class="shop-name">🏪 Shop: ${item.dealer || 'Direct Customer'}</span>
+                        <h3 style="margin:0;">${item.name}</h3>
+                        <span style="color:#007bff; font-weight:bold; font-size:1.2em;">📞 ${item.phone}</span>
 
-                html += `
-                <div class="card">
-                    <button class="done-btn" onclick="markDone(${item.row})">Mark Done</button>
-                    <span class="tech-tag">🛠️ ${item.tech}</span>
-                    
-                    <span class="shop-label">🏪 SHOP: ${item.dealer || 'DIRECT'}</span>
-                    <h3 style="margin:0;">${item.name}</h3>
-                    <span style="color:#007bff; font-weight:bold; font-size: 18px;">📞 ${item.phone}</span>
+                        <div class="info-grid">
+                            <div><span class="label">Brand</span><b>${item.brand}</b></div>
+                            <div><span class="label">Model</span><b>${item.model}</b></div>
+                            <div><span class="label">Pincode</span><b>${item.pincode}</b></div>
+                            <div><span class="label">Address</span><b>${item.address}</b></div>
+                        </div>
 
-                    <div class="info-grid">
-                        <div><span class="label">Brand</span><b>${item.brand || 'N/A'}</b></div>
-                        <div><span class="label">Model</span><b>${item.model || 'N/A'}</b></div>
-                        <div><span class="label">Area Pincode</span><b>${item.pincode}</b></div>
-                    </div>
+                        <div class="problem-section">
+                            <span class="label">Reported Problem:</span>
+                            <strong>${item.problem}</strong>
+                        </div>
 
-                    <p style="font-size:14px; margin:10px 0;"><b>Address:</b><br>${item.address}</p>
-
-                    <div class="problem-section">
-                        <span class="label">REPORTEED PROBLEM:</span>
-                        <strong style="font-size: 15px;">${item.problem}</strong>
-                    </div>
-
-                    <a href="https://wa.me/?text=${waMsg}" target="_blank" class="wa-btn">📲 Forward to WhatsApp</a>
-                </div>`;
-            });
-            container.innerHTML = html || "<h3>No active complaints!</h3>";
-        } catch (e) {
-            container.innerHTML = "Error loading data. Check script deployment.";
+                        <a href="https://wa.me/?text=${waMsg}" target="_blank" class="wa-btn">📲 Share to WhatsApp</a>
+                    </div>`;
+                });
+                document.getElementById('complaintList').innerHTML = html || "<h3>No Pending Tasks!</h3>";
+            } catch (e) {
+                document.getElementById('complaintList').innerHTML = "Error loading. Check Script Deployment.";
+            }
         }
-    }
 
-    async function markDone(row) {
-        if(!confirm("Are you sure the technician has completed this job?")) return;
-        const btn = event.target;
-        btn.disabled = true;
-        btn.innerText = "...";
-        
-        await fetch(scriptURL + "?action=complete&row=" + row);
-        alert("Excel Updated! Row: " + row + " is marked Completed.");
+        async function markDone(row) {
+            if(!confirm("Mark as Finished in Excel?")) return;
+            await fetch(scriptURL + "?action=complete&row=" + row);
+            alert("Updated! Row marked as Completed.");
+            fetchList();
+        }
         fetchList();
-    }
-
-    fetchList();
-</script>
-
+    </script>
 </body>
 </html>
