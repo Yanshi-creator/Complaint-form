@@ -11,11 +11,13 @@
         .count-badge { background: #ffc107; color: #000; padding: 2px 8px; border-radius: 10px; font-weight: bold; font-size: 12px; }
         
         .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-top: 5px solid #007bff; position: relative; }
-        .status-Completed { border-top-color: #28a745; opacity: 0.8; background: #f9fff9; } /* Light Green */
-        .status-Incomplete { border-top-color: #dc3545; opacity: 0.8; background: #fff5f5; } /* Light Red */
+        .status-Completed { border-top-color: #28a745; opacity: 0.8; background: #f9fff9; }
+        .status-Incomplete { border-top-color: #dc3545; opacity: 0.8; background: #fff5f5; }
         
-        .time-badge { font-size: 11px; color: #666; font-weight: bold; margin-bottom: 5px; display: block; }
-        .shop-tag { color: #d32f2f; font-weight: bold; display: block; margin: 5px 0; font-size: 14px; }
+        .cno-badge { background: #e3f2fd; color: #004085; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; border: 1px solid #b8daff; display: inline-block; }
+        .time-badge { font-size: 11px; color: #666; font-weight: bold; margin-left: 5px; display: inline-block; }
+        
+        .shop-tag { color: #d32f2f; font-weight: bold; display: block; margin: 8px 0 5px 0; font-size: 14px; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; font-size: 13px; background: #f8f9fa; padding: 8px; border-radius: 6px; }
         .prob-box { background: #fff9c4; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #fbc02d; font-size: 14px; }
         
@@ -47,13 +49,12 @@
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbz_8aNEGEXTcirCAls38sdCtP0xm5UFEBA_E4oXteOyPcREQC6e0AFXWQpwze54lX7l/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyyk2J_lswrMvXxf8lw3-GHbTVeJ7JAAVwrLSjuu9nLVDQUDf7Y36GBrS6-Hsh6cOKm/exec';
 
         async function load() {
             try {
                 const resp = await fetch(scriptURL + "?action=read");
                 const data = await resp.json();
-                const today = new Date().toLocaleDateString();
 
                 const lists = { santosh: document.getElementById('list-santosh'), rakesh: document.getElementById('list-rakesh'), ajay: document.getElementById('list-ajay'), others: document.getElementById('list-others') };
                 const counts = { santosh: 0, rakesh: 0, ajay: 0, others: 0 };
@@ -65,16 +66,18 @@
                     const timeStr = itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     const dateStr = itemDate.toLocaleDateString();
                     
-                    const msg = `*RAMA ELECTRONICS*%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Issue:* ${item.problem}`;
+                    const msg = `*RAMA ELECTRONICS*%0A*ID:* ${item.complaintNo || 'N/A'}%0A*Customer:* ${item.name}%0A*Phone:* ${item.phone}%0A*Issue:* ${item.problem}`;
                     
-                    // Logic to display correct icon and text for completed vs incomplete
                     const statusIcon = item.status === "Completed" ? "✅ COMPLETED" : "❌ INCOMPLETE/CANCELLED";
                     const statusColor = item.status === "Completed" ? "green" : "#dc3545";
 
                     const cardHtml = `
                     <div class="card status-${item.status}">
-                        <span class="time-badge">🕒 Logged: ${dateStr} | ${timeStr}</span>
-                        ${!isPending ? `<b style="float:right; color:${statusColor}; font-size:12px;">${statusIcon}</b>` : ''}
+                        <div style="margin-bottom: 8px;">
+                            <span class="cno-badge">🆔 ${item.complaintNo || 'NO ID'}</span>
+                            <span class="time-badge">🕒 ${dateStr} | ${timeStr}</span>
+                            ${!isPending ? `<b style="float:right; color:${statusColor}; font-size:12px; margin-top:4px;">${statusIcon}</b>` : ''}
+                        </div>
                         
                         <span class="shop-tag">🏪 Dealer Shop: ${item.dealer || 'Direct Customer'}</span>
                         <h3 style="margin:5px 0; font-size: 18px;">${item.name}</h3>
@@ -98,7 +101,7 @@
                                 <button class="c-btn" style="background:#28a745" onclick="update(event, '${item.row}', 'Completed')">Complete</button>
                                 <button class="c-btn" style="background:#dc3545" onclick="update(event, '${item.row}', 'Incomplete')">Incomplete/Cancel</button>
                             </div>
-                            <a href="https://wa.me/?text=${msg}" target="_blank" class="wa-btn">📲 WhatsApp Text</a>
+                            <a href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" class="wa-btn">📲 WhatsApp Text</a>
                         ` : `
                             <div style="margin-top:15px; font-size:14px; background:#e9ecef; padding:10px; border-radius:6px; border-left: 4px solid ${statusColor};">
                                 <small style="color:#666;">TECHNICIAN REMARKS:</small><br>
@@ -129,7 +132,6 @@
             }
             if(!confirm(`Mark this job as ${status}?`)) return;
             
-            // Disable button while saving to prevent double-clicks
             const btn = event.target;
             const originalText = btn.innerText;
             btn.innerText = "Saving...";
@@ -147,7 +149,7 @@
         }
 
         load();
-        setInterval(load, 180000); // Auto-refresh every 1 mins
+        setInterval(load, 180000); // Auto-refresh every 3 mins
     </script>
 </body>
 </html>
