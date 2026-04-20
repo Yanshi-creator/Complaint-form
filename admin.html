@@ -59,10 +59,9 @@
     </div>
 
     <script>
-        // ⚠️ PASTE YOUR SCRIPT URL HERE ⚠️
-        const scriptURL = 'https://script.google.com/macros/s/AKfycby9kEzNWiWoNlzoD91up19aFz3gWEkSc905ZDs6OEy6fgVuTqDNUcEtcTW4f9K_F0E/exec';
+        // ⚠️ PASTE NEW SCRIPT URL HERE ⚠️
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbx-oV22wCIUUGF_yGP4O0ABHne9haqDlvgy5yC13ehXlN5hbPiCVvUtjEv_jAxRZv20/exec';
 
-        // PASSWORDS AND ASSIGNMENTS (The 'excelName' must exactly match what you type in Column L)
         const accounts = {
             "santosh": { pass: "1234", excelName: "SANTOSH" },
             "rakesh": { pass: "1234", excelName: "RAKESH" },
@@ -141,12 +140,14 @@
                             <span class="shop-tag">🏪 Dealer Shop: ${item.dealer || 'Direct Customer'}</span>
                             <h3 style="margin:5px 0; font-size: 18px;">${item.name}</h3>
                             <b style="color:#007bff; font-size:1.1em;">📞 ${item.phone}</b>
+                            
                             <div class="info-grid">
                                 <div><b>Brand:</b> ${item.brand || 'N/A'}</div>
-                                <div><b>Model:</b> ${item.model || 'N/A'}</div>
-                                <div><b>Pincode:</b> ${item.pincode}</div>
+                                <div><b>Model:</b> ${item.modelName || 'N/A'} ${item.modelNumber || ''}</div>
+                                <div><b>Area:</b> ${item.area || 'N/A'} - ${item.pincode}</div>
                             </div>
                             <p style="font-size:14px; margin: 10px 0;"><b>Address:</b> ${item.address}</p>
+                            
                             <div class="prob-box"><small style="color:#888;">CUSTOMER ISSUE:</small><br><strong>${item.problem}</strong></div>
                             ${isPending ? `
                                 <textarea id="rem-${item.row}" class="remark-box" rows="2" placeholder="Tech Notes: What was done? Or why is it incomplete?"></textarea>
