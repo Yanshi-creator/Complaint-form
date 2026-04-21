@@ -59,8 +59,11 @@
     </div>
 
     <script>
-        // ⚠️ PASTE NEW SCRIPT URL HERE ⚠️
+        // ⚠️ SCRIPT URL ⚠️
         const scriptURL = 'https://script.google.com/macros/s/AKfycby-dCz98IG73h7gWufYxeXJQUUo9XG-wdcPgNzGqoOYfE-x-6Wa68feDkKzluQbXBQi/exec';
+
+        // ⚠️ YOUR DASHBOARD LINK ⚠️
+        const DASHBOARD_LINK = 'https://yanshi-creator.github.io/Complaint-form/admin.html';
 
         const accounts = {
             "santosh": { pass: "1234", excelName: "SANTOSH" },
@@ -125,7 +128,10 @@
                         const itemDate = new Date(item.date);
                         const timeStr = itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                         const dateStr = itemDate.toLocaleDateString();
-                        const msg = `NEW - ${item.complaintNo || 'N/A'} - ${item.area || 'N/A'}`;
+                        
+                        // ADDED THE LINK TO THE WHATSAPP MESSAGE HERE
+                        const msg = `NEW - ${item.complaintNo || 'N/A'} - ${item.area || 'N/A'}\n${DASHBOARD_LINK}`;
+                        
                         const statusIcon = item.status === "Completed" ? "✅ COMPLETED" : "❌ INCOMPLETE";
                         const statusColor = item.status === "Completed" ? "green" : "#dc3545";
 
