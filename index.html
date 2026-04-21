@@ -53,11 +53,11 @@
     </form>
 </div>
 <script>
-    // ⚠️ PASTE NEW SCRIPT URL HERE ⚠️
     const scriptURL = 'https://script.google.com/macros/s/AKfycby-dCz98IG73h7gWufYxeXJQUUo9XG-wdcPgNzGqoOYfE-x-6Wa68feDkKzluQbXBQi/exec';
     
-    // ⚠️ TYPE YOUR WHATSAPP NUMBER HERE (INCLUDE COUNTRY CODE) ⚠️
-    const ADMIN_WHATSAPP = "+919624870096"; 
+    const ADMIN_WHATSAPP = "919624870096"; 
+    
+    const DASHBOARD_LINK = "https://yanshi-creator.github.io/Complaint-form/admin.html";
 
     const form = document.getElementById('complaintForm');
     form.addEventListener('submit', e => {
@@ -75,7 +75,7 @@
         .then(response => { 
             alert("Success! Your complaint is registered.\n\nYour Complaint No: " + newComplaintNo); 
             
-            const waMessage = `NEW - ${newComplaintNo} - ${areaLocation}`;
+            const waMessage = `NEW - ${newComplaintNo} - ${areaLocation}\n${DASHBOARD_LINK}`;
             const waLink = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(waMessage)}`;
             window.open(waLink, '_blank'); 
 
