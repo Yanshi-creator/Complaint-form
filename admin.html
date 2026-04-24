@@ -129,8 +129,17 @@
                         const timeStr = itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                         const dateStr = itemDate.toLocaleDateString();
                         
-                        // ADDED THE LINK TO THE WHATSAPP MESSAGE HERE
-                        const msg = `NEW - ${item.complaintNo || 'N/A'} - ${item.area || 'N/A'}\n${DASHBOARD_LINK}`;
+                        // --- FULLY DETAILED WHATSAPP MESSAGE ---
+                        const msg = `*NEW COMPLAINT: ${item.complaintNo || 'N/A'}*\n` +
+                                    `📅 *Time:* ${dateStr} | ${timeStr}\n` +
+                                    `👤 *Name:* ${item.name}\n` +
+                                    `📞 *Phone:* ${item.phone}\n` +
+                                    `🏪 *Dealer:* ${item.dealer || 'Direct Customer'}\n` +
+                                    `📍 *Area:* ${item.area || 'N/A'} (${item.pincode})\n` +
+                                    `🏠 *Address:* ${item.address}\n` +
+                                    `🔧 *Device:* ${item.brand || 'N/A'} - ${item.modelNumber || 'N/A'}\n` +
+                                    `⚠️ *Issue:* ${item.problem}\n\n` +
+                                    `🔗 *Dashboard:* ${DASHBOARD_LINK}`;
                         
                         const statusIcon = item.status === "Completed" ? "✅ COMPLETED" : "❌ INCOMPLETE";
                         const statusColor = item.status === "Completed" ? "green" : "#dc3545";
