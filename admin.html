@@ -12,8 +12,15 @@
         .login-input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
         .login-btn { background: #007bff; color: white; padding: 12px; border: none; width: 100%; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; }
         
-        .welcome-bar { background: #343a40; color: white; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-transform: uppercase; font-size: 16px; font-weight: bold; text-align: center; display: flex; justify-content: space-between; align-items: center;}
+        .welcome-bar { background: #343a40; color: white; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; font-size: 16px; font-weight: bold; text-align: center; display: flex; justify-content: space-between; align-items: center;}
         .job-count { background: #ffc107; color: #000; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+
+        /* --- NEW TAB & FILTER STYLES --- */
+        .tab-container { display: flex; gap: 5px; margin-bottom: 10px; }
+        .tab-btn { flex: 1; padding: 12px; background: #e9ecef; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; transition: 0.2s; }
+        .tab-btn.active { background: #007bff; color: white; border-color: #007bff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .filter-bar { background: white; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .area-select { flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold; color: #004085; }
 
         .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-top: 5px solid #007bff; position: relative; }
         .status-Completed { border-top-color: #28a745; opacity: 0.8; background: #f9fff9; }
@@ -55,14 +62,28 @@
             <span id="techNameBar">👤 LOADING...</span>
             <span class="job-count" id="jobCountBadge">0</span>
         </div>
-        <div id="my-jobs"></div>
+
+        <!-- NEW TAB CONTROLS -->
+        <div class="tab-container">
+            <button id="tab-open" class="tab-btn active" onclick="switchTab('open')">Pending</button>
+            <button id="tab-done" class="tab-btn" onclick="switchTab('done')">Completed</button>
+        </div>
+
+        <!-- NEW AREA FILTER -->
+        <div class="filter-bar">
+            <span>📍 Filter Area:</span>
+            <select id="areaFilter" class="area-select" onchange="renderCards()">
+                <option value="ALL">Show All Areas</option>
+            </select>
+        </div>
+
+        <!-- TWO SEPARATE LISTS -->
+        <div id="list-open"></div>
+        <div id="list-done" style="display:none;"></div>
     </div>
 
     <script>
-        // ⚠️ SCRIPT URL ⚠️
         const scriptURL = 'https://script.google.com/macros/s/AKfycby-dCz98IG73h7gWufYxeXJQUUo9XG-wdcPgNzGqoOYfE-x-6Wa68feDkKzluQbXBQi/exec';
-
-        // ⚠️ YOUR DASHBOARD LINK ⚠️
         const DASHBOARD_LINK = 'https://yanshi-creator.github.io/Complaint-form/admin.html';
 
         const accounts = {
@@ -73,6 +94,7 @@
         };
 
         let currentTech = "";
+        let globalData = []; // Store data globally to allow fast filtering
         let autoRefreshInterval;
 
         window.onload = () => {
@@ -112,73 +134,139 @@
             document.getElementById('logoutBtn').style.display = "none";
         }
 
+        // Toggles between Pending and Completed views
+        function switchTab(tab) {
+            if(tab === 'open') {
+                document.getElementById('tab-open').classList.add('active');
+                document.getElementById('tab-done').classList.remove('active');
+                document.getElementById('list-open').style.display = "block";
+                document.getElementById('list-done').style.display = "none";
+            } else {
+                document.getElementById('tab-done').classList.add('active');
+                document.getElementById('tab-open').classList.remove('active');
+                document.getElementById('list-done').style.display = "block";
+                document.getElementById('list-open').style.display = "none";
+            }
+        }
+
         async function load() {
             try {
                 const resp = await fetch(scriptURL + "?action=read");
-                const data = await resp.json();
-                const listDiv = document.getElementById('my-jobs');
-                listDiv.innerHTML = "";
-                let jobCount = 0;
-
-                data.forEach(item => {
+                const rawData = await resp.json();
+                
+                // Filter raw data to only keep jobs for the logged-in tech (or ALL for admin)
+                globalData = rawData.filter(item => {
                     const techAssigned = (item.tech || "").toUpperCase();
-                    if (currentTech === "ALL" || techAssigned.includes(currentTech)) {
-                        jobCount++;
-                        const isPending = item.status === "Open";
-                        const itemDate = new Date(item.date);
-                        const timeStr = itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        const dateStr = itemDate.toLocaleDateString();
-                        
-                        // --- FULLY DETAILED WHATSAPP MESSAGE ---
-                        const msg = `*NEW COMPLAINT: ${item.complaintNo || 'N/A'}*\n` +
-                                    `📅 *Time:* ${dateStr} | ${timeStr}\n` +
-                                    `👤 *Name:* ${item.name}\n` +
-                                    `📞 *Phone:* ${item.phone}\n` +
-                                    `🏪 *Dealer:* ${item.dealer || 'Direct Customer'}\n` +
-                                    `📍 *Area:* ${item.area || 'N/A'} (${item.pincode})\n` +
-                                    `🏠 *Address:* ${item.address}\n` +
-                                    `🔧 *Device:* ${item.brand || 'N/A'} - ${item.modelNumber || 'N/A'}\n` +
-                                    `⚠️ *Issue:* ${item.problem}\n\n` +
-                                    `🔗 *Dashboard:* ${DASHBOARD_LINK}`;
-                        
-                        const statusIcon = item.status === "Completed" ? "✅ COMPLETED" : "❌ INCOMPLETE";
-                        const statusColor = item.status === "Completed" ? "green" : "#dc3545";
-
-                        listDiv.innerHTML += `
-                        <div class="card status-${item.status}">
-                            <div style="margin-bottom: 8px;">
-                                <span class="cno-badge">🆔 ${item.complaintNo || 'NO ID'}</span>
-                                <span class="time-badge">🕒 ${dateStr} | ${timeStr}</span>
-                                ${!isPending ? `<b style="float:right; color:${statusColor}; font-size:12px; margin-top:4px;">${statusIcon}</b>` : ''}
-                            </div>
-                            ${currentTech === 'ALL' ? `<div style="background:#e3f2fd; color:#007bff; display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:bold;">Assigned to: ${item.tech}</div>` : ''}
-                            <span class="shop-tag">🏪 Dealer Shop: ${item.dealer || 'Direct Customer'}</span>
-                            <h3 style="margin:5px 0; font-size: 18px;">${item.name}</h3>
-                            <b style="color:#007bff; font-size:1.1em;">📞 ${item.phone}</b>
-                            
-                            <div class="info-grid">
-                                <div><b>Brand:</b> ${item.brand || 'N/A'}</div>
-                                <div><b>Model:</b> ${item.modelNumber || 'N/A'}</div>
-                                <div><b>Area:</b> ${item.area || 'N/A'} - ${item.pincode}</div>
-                            </div>
-                            <p style="font-size:14px; margin: 10px 0;"><b>Address:</b> ${item.address}</p>
-                            
-                            <div class="prob-box"><small style="color:#888;">CUSTOMER ISSUE:</small><br><strong>${item.problem}</strong></div>
-                            ${isPending ? `
-                                <textarea id="rem-${item.row}" class="remark-box" rows="2" placeholder="Tech Notes: What was done? Or why is it incomplete?"></textarea>
-                                <div class="btn-row">
-                                    <button class="c-btn" style="background:#28a745" onclick="update(event, '${item.row}', 'Completed')">Complete</button>
-                                    <button class="c-btn" style="background:#dc3545" onclick="update(event, '${item.row}', 'Incomplete')">Incomplete</button>
-                                </div>
-                                <a href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" class="wa-btn">📲 WhatsApp Dispatch</a>
-                            ` : `<div style="margin-top:15px; font-size:14px; background:#e9ecef; padding:10px; border-radius:6px; border-left: 4px solid ${statusColor};"><small style="color:#666;">TECHNICIAN REMARKS:</small><br><b>${item.remarks || 'No remarks provided.'}</b></div>`}
-                        </div>`;
-                    }
+                    return (currentTech === "ALL" || techAssigned.includes(currentTech));
                 });
 
-                document.getElementById('jobCountBadge').innerText = jobCount;
-                if (jobCount === 0) listDiv.innerHTML = '<div class="empty-msg">No jobs assigned yet. Take a break! ☕</div>';
+                document.getElementById('jobCountBadge').innerText = globalData.length;
+                updateAreaDropdown();
+                renderCards();
+
             } catch (e) { console.error("Error loading data", e); }
+        }
+
+        // Extracts unique areas and populates the dropdown
+        function updateAreaDropdown() {
+            const areaSelect = document.getElementById('areaFilter');
+            const currentSelection = areaSelect.value; // Remember what they selected
+            
+            const uniqueAreas = new Set();
+            globalData.forEach(item => {
+                if(item.area) uniqueAreas.add(item.area.trim().toUpperCase());
+            });
+
+            let optionsHtml = `<option value="ALL">Show All Areas</option>`;
+            Array.from(uniqueAreas).sort().forEach(area => {
+                optionsHtml += `<option value="${area}">${area}</option>`;
+            });
+
+            areaSelect.innerHTML = optionsHtml;
+            
+            // Re-apply previous selection if it still exists
+            if (Array.from(uniqueAreas).includes(currentSelection)) {
+                areaSelect.value = currentSelection;
+            }
+        }
+
+        // Draws the cards based on Tab and Area Filter
+        function renderCards() {
+            const listOpen = document.getElementById('list-open');
+            const listDone = document.getElementById('list-done');
+            const selectedArea = document.getElementById('areaFilter').value;
+
+            listOpen.innerHTML = "";
+            listDone.innerHTML = "";
+            let openCount = 0;
+            let doneCount = 0;
+
+            globalData.forEach(item => {
+                const itemArea = (item.area || "").trim().toUpperCase();
+                
+                // Skip if area doesn't match filter
+                if (selectedArea !== "ALL" && itemArea !== selectedArea) return;
+
+                const isPending = item.status === "Open";
+                const itemDate = new Date(item.date);
+                const timeStr = itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const dateStr = itemDate.toLocaleDateString();
+                
+                const msg = `*NEW COMPLAINT: ${item.complaintNo || 'N/A'}*\n` +
+                            `📅 *Time:* ${dateStr} | ${timeStr}\n` +
+                            `👤 *Name:* ${item.name}\n` +
+                            `📞 *Phone:* ${item.phone}\n` +
+                            `🏪 *Dealer:* ${item.dealer || 'Direct Customer'}\n` +
+                            `📍 *Area:* ${item.area || 'N/A'} (${item.pincode})\n` +
+                            `🏠 *Address:* ${item.address}\n` +
+                            `🔧 *Device:* ${item.brand || 'N/A'} - ${item.modelNumber || 'N/A'}\n` +
+                            `⚠️ *Issue:* ${item.problem}\n\n` +
+                            `🔗 *Dashboard:* ${DASHBOARD_LINK}`;
+                
+                const statusIcon = item.status === "Completed" ? "✅ COMPLETED" : "❌ INCOMPLETE";
+                const statusColor = item.status === "Completed" ? "green" : "#dc3545";
+
+                const cardHtml = `
+                <div class="card status-${item.status}">
+                    <div style="margin-bottom: 8px;">
+                        <span class="cno-badge">🆔 ${item.complaintNo || 'NO ID'}</span>
+                        <span class="time-badge">🕒 ${dateStr} | ${timeStr}</span>
+                        ${!isPending ? `<b style="float:right; color:${statusColor}; font-size:12px; margin-top:4px;">${statusIcon}</b>` : ''}
+                    </div>
+                    ${currentTech === 'ALL' ? `<div style="background:#e3f2fd; color:#007bff; display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:bold;">Assigned to: ${item.tech}</div>` : ''}
+                    <span class="shop-tag">🏪 Dealer Shop: ${item.dealer || 'Direct Customer'}</span>
+                    <h3 style="margin:5px 0; font-size: 18px;">${item.name}</h3>
+                    <b style="color:#007bff; font-size:1.1em;">📞 ${item.phone}</b>
+                    
+                    <div class="info-grid">
+                        <div><b>Brand:</b> ${item.brand || 'N/A'}</div>
+                        <div><b>Model:</b> ${item.modelNumber || 'N/A'}</div>
+                        <div><b>Area:</b> ${item.area || 'N/A'} - ${item.pincode}</div>
+                    </div>
+                    <p style="font-size:14px; margin: 10px 0;"><b>Address:</b> ${item.address}</p>
+                    
+                    <div class="prob-box"><small style="color:#888;">CUSTOMER ISSUE:</small><br><strong>${item.problem}</strong></div>
+                    ${isPending ? `
+                        <textarea id="rem-${item.row}" class="remark-box" rows="2" placeholder="Tech Notes: What was done? Or why is it incomplete?"></textarea>
+                        <div class="btn-row">
+                            <button class="c-btn" style="background:#28a745" onclick="update(event, '${item.row}', 'Completed')">Complete</button>
+                            <button class="c-btn" style="background:#dc3545" onclick="update(event, '${item.row}', 'Incomplete')">Incomplete</button>
+                        </div>
+                        <a href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" class="wa-btn">📲 WhatsApp Dispatch</a>
+                    ` : `<div style="margin-top:15px; font-size:14px; background:#e9ecef; padding:10px; border-radius:6px; border-left: 4px solid ${statusColor};"><small style="color:#666;">TECHNICIAN REMARKS:</small><br><b>${item.remarks || 'No remarks provided.'}</b></div>`}
+                </div>`;
+
+                if (isPending) {
+                    listOpen.innerHTML += cardHtml;
+                    openCount++;
+                } else {
+                    listDone.innerHTML += cardHtml;
+                    doneCount++;
+                }
+            });
+
+            if (openCount === 0) listOpen.innerHTML = '<div class="empty-msg">No pending jobs for this area! ☕</div>';
+            if (doneCount === 0) listDone.innerHTML = '<div class="empty-msg">No completed jobs to show.</div>';
         }
 
         async function update(event, row, status) {
@@ -193,7 +281,7 @@
             try {
                 await fetch(`${scriptURL}?action=updateStatus&row=${row}&status=${status}&remarks=${encodeURIComponent(remark)}`);
                 alert("Report Saved Successfully!");
-                load();
+                load(); // Reloads data instantly
             } catch (err) {
                 alert("Error saving report. Please check your internet connection.");
                 btn.innerText = originalText;
