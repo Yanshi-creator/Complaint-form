@@ -25,14 +25,114 @@
     </div>
     <form id="complaintForm">
         <label>Complaint Type *</label>
-        <select name="userType" required><option>Customer</option><option>Shop</option></select>
+        <select name="userType" required>
+            <option value="Customer">Customer</option>
+            <option value="Shop">Shop</option>
+        </select>
         
         <label>Customer Name *</label><input type="text" name="name" required>
         <label>Phone Number *</label><input type="tel" name="phone" required>
         <label>Full Address *</label><textarea name="address" required></textarea>
         
         <div style="display:flex; gap:10px;">
-            <div style="flex:1;"><label>Area *</label><input type="text" name="area" id="areaField" required></div>
+            <div style="flex:1;">
+                <label>Area *</label>
+                <!-- NEW A-Z DROPDOWN LIST -->
+                <select name="area" id="areaField" required>
+                    <option value="" disabled selected>Select Area</option>
+                    <option value="A K Road">A K Road</option>
+                    <option value="Adajan">Adajan</option>
+                    <option value="Adajan Patiya">Adajan Patiya</option>
+                    <option value="Amroli">Amroli</option>
+                    <option value="Antroli">Antroli</option>
+                    <option value="Archana">Archana</option>
+                    <option value="Athwa">Athwa</option>
+                    <option value="Athwalines">Athwalines</option>
+                    <option value="Bagumara Gam">Bagumara Gam</option>
+                    <option value="Bamroli">Bamroli</option>
+                    <option value="Bardoli">Bardoli</option>
+                    <option value="Begumpura">Begumpura</option>
+                    <option value="Bhagal">Bhagal</option>
+                    <option value="Bhatar">Bhatar</option>
+                    <option value="Bhatha/Bhatpore">Bhatha/Bhatpore</option>
+                    <option value="Bhestan">Bhestan</option>
+                    <option value="Bhimrad">Bhimrad</option>
+                    <option value="Chalthan">Chalthan</option>
+                    <option value="Chhaprabhatha">Chhaprabhatha</option>
+                    <option value="Chowk Bazar">Chowk Bazar</option>
+                    <option value="City Light">City Light</option>
+                    <option value="Dabholi">Dabholi</option>
+                    <option value="Dastan">Dastan</option>
+                    <option value="Devadh Gam">Devadh Gam</option>
+                    <option value="Dindoli">Dindoli</option>
+                    <option value="Dumbhal">Dumbhal</option>
+                    <option value="Galemandi">Galemandi</option>
+                    <option value="Gangadhara">Gangadhara</option>
+                    <option value="Godadara">Godadara</option>
+                    <option value="Gopipura">Gopipura</option>
+                    <option value="Gorat">Gorat</option>
+                    <option value="Haripura">Haripura</option>
+                    <option value="Hira Bagh">Hira Bagh</option>
+                    <option value="Ichhapore">Ichhapore</option>
+                    <option value="Jahangirpura">Jahangirpura</option>
+                    <option value="Jolwa">Jolwa</option>
+                    <option value="Kadodra">Kadodra</option>
+                    <option value="Kapodra">Kapodra</option>
+                    <option value="Katargam">Katargam</option>
+                    <option value="Kathor">Kathor</option>
+                    <option value="Kharwawad">Kharwawad</option>
+                    <option value="Khodiyar Nagar">Khodiyar Nagar</option>
+                    <option value="Kim">Kim</option>
+                    <option value="Kosad">Kosad</option>
+                    <option value="Krushnakunj">Krushnakunj</option>
+                    <option value="Kumbharia">Kumbharia</option>
+                    <option value="L.P. Savani">L.P. Savani</option>
+                    <option value="Laxman Nagar">Laxman Nagar</option>
+                    <option value="Laxmi Nagar">Laxmi Nagar</option>
+                    <option value="Limbayat">Limbayat</option>
+                    <option value="Mahidharpura">Mahidharpura</option>
+                    <option value="Man Darwaja">Man Darwaja</option>
+                    <option value="Maroli">Maroli</option>
+                    <option value="Mora Hazira">Mora Hazira</option>
+                    <option value="Mota Varachha">Mota Varachha</option>
+                    <option value="Nana Varachha">Nana Varachha</option>
+                    <option value="Nanavat">Nanavat</option>
+                    <option value="Nanpura">Nanpura</option>
+                    <option value="Navagam">Navagam</option>
+                    <option value="Nilgiri Fatak">Nilgiri Fatak</option>
+                    <option value="Pal">Pal</option>
+                    <option value="Palanpur">Palanpur</option>
+                    <option value="Palsana">Palsana</option>
+                    <option value="Pandesara">Pandesara</option>
+                    <option value="Parle Point">Parle Point</option>
+                    <option value="Parvat Gam">Parvat Gam</option>
+                    <option value="Parvat Patiya">Parvat Patiya</option>
+                    <option value="Piplod">Piplod</option>
+                    <option value="Punagam">Punagam</option>
+                    <option value="Ramnagar">Ramnagar</option>
+                    <option value="Rander">Rander</option>
+                    <option value="Ring Road">Ring Road</option>
+                    <option value="Sachin">Sachin</option>
+                    <option value="Sagrampura">Sagrampura</option>
+                    <option value="Saiyadpura">Saiyadpura</option>
+                    <option value="Salabatpura">Salabatpura</option>
+                    <option value="Saniya Gam">Saniya Gam</option>
+                    <option value="Saroli">Saroli</option>
+                    <option value="Shahpor">Shahpor</option>
+                    <option value="Simada">Simada</option>
+                    <option value="Tadwadi">Tadwadi</option>
+                    <option value="Tathiya">Tathiya</option>
+                    <option value="Uchchhal">Uchchhal</option>
+                    <option value="Udhna">Udhna</option>
+                    <option value="Umbhel">Umbhel</option>
+                    <option value="Unn">Unn</option>
+                    <option value="Varachha">Varachha</option>
+                    <option value="Ved Road">Ved Road</option>
+                    <option value="Velnja">Velnja</option>
+                    <option value="Vesu">Vesu</option>
+                    <option value="Yogi Chowk">Yogi Chowk</option>
+                </select>
+            </div>
             <div style="flex:1;"><label>Pincode *</label><input type="text" name="pincode" required></div>
         </div>
         
@@ -44,7 +144,7 @@
         
         <label>Problem Details *</label><textarea name="problem" placeholder="What is the issue?" required></textarea>
         
-        <label>Dealer Shop Name and number * <span class="sub-label">(Type NA if not applicable)</span></label>
+        <label>Dealer Shop Name * <span class="sub-label">(Type NA if not applicable)</span></label>
         <input type="text" name="dealerName" required>
         
         <input type="hidden" name="complaintNo" id="cNoField">
@@ -54,9 +154,7 @@
 </div>
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycby-dCz98IG73h7gWufYxeXJQUUo9XG-wdcPgNzGqoOYfE-x-6Wa68feDkKzluQbXBQi/exec';
-    
     const ADMIN_WHATSAPP = "919624870096"; 
-    
     const DASHBOARD_LINK = "https://yanshi-creator.github.io/Complaint-form/admin.html";
 
     const form = document.getElementById('complaintForm');
@@ -64,28 +162,34 @@
         e.preventDefault();
         
         const btn = document.getElementById('subBtn');
-        btn.innerText = "Please wait...";
+        btn.innerText = "Checking Details...";
         btn.disabled = true;
 
         const newComplaintNo = "RMA-" + Math.floor(10000 + Math.random() * 90000);
         document.getElementById('cNoField').value = newComplaintNo;
         const areaLocation = document.getElementById('areaField').value;
         
-        fetch(scriptURL, { method: 'POST', body: new FormData(form), mode: 'no-cors'})
-        .then(response => { 
-            alert("Success! Your complaint is registered.\n\nYour Complaint No: " + newComplaintNo); 
-            
-            const waMessage = `NEW - ${newComplaintNo} - ${areaLocation}\n${DASHBOARD_LINK}`;
-            const waLink = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(waMessage)}`;
-            window.open(waLink, '_blank'); 
+        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => response.json())
+        .then(data => { 
+            if (data.result === "Duplicate") {
+                alert("⚠️ DUPLICATE COMPLAINT DETECTED ⚠️\n\nA complaint for this Customer Name and Problem was already submitted in the last 24 hours.");
+                btn.innerText = "Submit Complaint";
+                btn.disabled = false;
+            } else {
+                alert("Success! Your complaint is registered.\n\nYour Complaint No: " + newComplaintNo); 
+                
+                const waMessage = `NEW - ${newComplaintNo} - ${areaLocation}\n${DASHBOARD_LINK}`;
+                const waLink = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(waMessage)}`;
+                window.open(waLink, '_blank'); 
 
-            form.reset();
-            btn.innerText = "Submit Complaint";
-            btn.disabled = false;
+                form.reset();
+                btn.innerText = "Submit Complaint";
+                btn.disabled = false;
+            }
         })
         .catch(error => {
-            alert("Submission complete. Please check the dashboard.");
-            form.reset();
+            alert("An error occurred. Please try again.");
             btn.innerText = "Submit Complaint";
             btn.disabled = false;
         });
