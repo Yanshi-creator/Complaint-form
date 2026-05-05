@@ -1,293 +1,230 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tech Dashboard | Rama Electronics</title>
+    <title>Rama Electronics | Service Request</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 10px; margin: 0; }
-        .header { background: #004085; color: white; padding: 15px; text-align: center; margin-bottom: 20px; position: relative; }
-        .logout-btn { position: absolute; right: 15px; top: 15px; background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        
-        #login-screen { max-width: 350px; margin: 60px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
-        .login-input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        .login-btn { background: #007bff; color: white; padding: 12px; border: none; width: 100%; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        
-        .welcome-bar { background: #343a40; color: white; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; font-size: 16px; font-weight: bold; text-align: center; display: flex; justify-content: space-between; align-items: center;}
-        .job-count { background: #ffc107; color: #000; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
-
-        /* --- NEW TAB & FILTER STYLES --- */
-        .tab-container { display: flex; gap: 5px; margin-bottom: 10px; }
-        .tab-btn { flex: 1; padding: 12px; background: #e9ecef; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; transition: 0.2s; }
-        .tab-btn.active { background: #007bff; color: white; border-color: #007bff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .filter-bar { background: white; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .area-select { flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold; color: #004085; }
-
-        .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-top: 5px solid #007bff; position: relative; }
-        .status-Completed { border-top-color: #28a745; opacity: 0.8; background: #f9fff9; }
-        .status-Incomplete { border-top-color: #dc3545; opacity: 0.8; background: #fff5f5; }
-        
-        .cno-badge { background: #e3f2fd; color: #004085; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; border: 1px solid #b8daff; display: inline-block; }
-        .time-badge { font-size: 11px; color: #666; font-weight: bold; margin-left: 5px; display: inline-block; }
-        .shop-tag { color: #d32f2f; font-weight: bold; display: block; margin: 8px 0 5px 0; font-size: 14px; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; font-size: 13px; background: #f8f9fa; padding: 8px; border-radius: 6px; }
-        .prob-box { background: #fff9c4; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #fbc02d; font-size: 14px; }
-        
-        .remark-box { width: 100%; padding: 10px; margin-top: 15px; border: 2px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; font-family: sans-serif; resize: vertical; }
-        .btn-row { display: flex; gap: 8px; margin-top: 10px; }
-        .c-btn { flex: 1; padding: 12px; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 14px; }
-        .wa-btn { background: #25D366; color: white; text-decoration: none; display: block; text-align: center; padding: 10px; border-radius: 8px; margin-top: 10px; font-weight: bold; font-size: 13px; }
-        .empty-msg { text-align: center; color: #888; font-style: italic; padding: 20px; background: #fff; border-radius: 8px; border: 1px dashed #ccc; margin-top: 20px;}
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .logo { text-align: center; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-top: 15px; font-size: 14px; }
+        .sub-label { font-weight: normal; font-size: 12px; color: #666; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { background: #007bff; color: white; padding: 15px; border: none; width: 100%; font-size: 18px; font-weight: bold; border-radius: 6px; margin-top: 25px; cursor: pointer; transition: 0.3s;}
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .heena-badge { background: #f8d7da; color: #dc3545; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; display: inline-block; margin-top: 5px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 style="margin:0;">RAMA ELECTRONICS</h2>
-        <div style="font-size:11px; opacity:0.8; text-transform: uppercase;">Field Technician App</div>
-        <button id="logoutBtn" class="logout-btn" style="display:none;" onclick="logout()">LOGOUT</button>
+<div class="container">
+    <div class="logo">
+        <h1 style="margin:0; color:#004085;">RAMA</h1>
+        <p style="margin:0; font-size:12px; color:#666; letter-spacing:1px; text-transform: uppercase;">Electronics Service</p>
+        <div class="heena-badge">A UNIT OF HEENA ELECTRONICS PVT LTD</div>
     </div>
-
-    <div id="login-screen">
-        <h2 style="color: #004085; margin: 0 0 5px 0;">TECH LOGIN</h2>
-        <p style="color: #666; font-size: 13px; margin-bottom: 20px;">Enter your ID and Password</p>
+    <form id="complaintForm">
+        <label>Complaint Type *</label>
+        <select name="userType" required>
+            <option value="Customer">Customer</option>
+            <option value="Shop">Shop</option>
+        </select>
         
-        <input type="text" id="userid" class="login-input" placeholder="User ID (e.g., santosh)">
-        <input type="password" id="password" class="login-input" placeholder="Password">
+        <label>Customer Name *</label><input type="text" name="name" required>
+        <label>Phone Number *</label><input type="tel" name="phone" required>
+        <label>Full Address *</label><textarea name="address" required></textarea>
         
-        <button class="login-btn" onclick="checkLogin()">LOGIN</button>
-        <p id="login-error" style="color: red; display: none; margin-top: 10px; font-size: 13px;">Incorrect ID or Password!</p>
-    </div>
-
-    <div id="dashboard" style="max-width: 550px; margin: auto; display: none;">
-        <div class="welcome-bar">
-            <span id="techNameBar">👤 LOADING...</span>
-            <span class="job-count" id="jobCountBadge">0</span>
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1;">
+                <label>Area *</label>
+                <!-- NEW A-Z DROPDOWN LIST WITH OLPAD & OTHER -->
+                <select id="areaDropdown" onchange="checkOtherArea()" required>
+                    <option value="" disabled selected>Select Area</option>
+                    <option value="A K Road">A K Road</option>
+                    <option value="Adajan">Adajan</option>
+                    <option value="Adajan Patiya">Adajan Patiya</option>
+                    <option value="Amroli">Amroli</option>
+                    <option value="Antroli">Antroli</option>
+                    <option value="Archana">Archana</option>
+                    <option value="Athwa">Athwa</option>
+                    <option value="Athwalines">Athwalines</option>
+                    <option value="Bagumara Gam">Bagumara Gam</option>
+                    <option value="Bamroli">Bamroli</option>
+                    <option value="Bardoli">Bardoli</option>
+                    <option value="Begumpura">Begumpura</option>
+                    <option value="Bhagal">Bhagal</option>
+                    <option value="Bhatar">Bhatar</option>
+                    <option value="Bhatha/Bhatpore">Bhatha/Bhatpore</option>
+                    <option value="Bhestan">Bhestan</option>
+                    <option value="Bhimrad">Bhimrad</option>
+                    <option value="Chalthan">Chalthan</option>
+                    <option value="Chhaprabhatha">Chhaprabhatha</option>
+                    <option value="Chowk Bazar">Chowk Bazar</option>
+                    <option value="City Light">City Light</option>
+                    <option value="Dabholi">Dabholi</option>
+                    <option value="Dastan">Dastan</option>
+                    <option value="Devadh Gam">Devadh Gam</option>
+                    <option value="Dindoli">Dindoli</option>
+                    <option value="Dumbhal">Dumbhal</option>
+                    <option value="Galemandi">Galemandi</option>
+                    <option value="Gangadhara">Gangadhara</option>
+                    <option value="Godadara">Godadara</option>
+                    <option value="Gopipura">Gopipura</option>
+                    <option value="Gorat">Gorat</option>
+                    <option value="Haripura">Haripura</option>
+                    <option value="Hira Bagh">Hira Bagh</option>
+                    <option value="Ichhapore">Ichhapore</option>
+                    <option value="Jahangirpura">Jahangirpura</option>
+                    <option value="Jolwa">Jolwa</option>
+                    <option value="Kadodra">Kadodra</option>
+                    <option value="Kapodra">Kapodra</option>
+                    <option value="Katargam">Katargam</option>
+                    <option value="Kathor">Kathor</option>
+                    <option value="Kharwawad">Kharwawad</option>
+                    <option value="Khodiyar Nagar">Khodiyar Nagar</option>
+                    <option value="Kim">Kim</option>
+                    <option value="Kosad">Kosad</option>
+                    <option value="Krushnakunj">Krushnakunj</option>
+                    <option value="Kumbharia">Kumbharia</option>
+                    <option value="L.P. Savani">L.P. Savani</option>
+                    <option value="Laxman Nagar">Laxman Nagar</option>
+                    <option value="Laxmi Nagar">Laxmi Nagar</option>
+                    <option value="Limbayat">Limbayat</option>
+                    <option value="Mahidharpura">Mahidharpura</option>
+                    <option value="Man Darwaja">Man Darwaja</option>
+                    <option value="Maroli">Maroli</option>
+                    <option value="Mora Hazira">Mora Hazira</option>
+                    <option value="Mota Varachha">Mota Varachha</option>
+                    <option value="Nana Varachha">Nana Varachha</option>
+                    <option value="Nanavat">Nanavat</option>
+                    <option value="Nanpura">Nanpura</option>
+                    <option value="Navagam">Navagam</option>
+                    <option value="Nilgiri Fatak">Nilgiri Fatak</option>
+                    <option value="Olpad">Olpad</option>
+                    <option value="Pal">Pal</option>
+                    <option value="Palanpur">Palanpur</option>
+                    <option value="Palsana">Palsana</option>
+                    <option value="Pandesara">Pandesara</option>
+                    <option value="Parle Point">Parle Point</option>
+                    <option value="Parvat Gam">Parvat Gam</option>
+                    <option value="Parvat Patiya">Parvat Patiya</option>
+                    <option value="Piplod">Piplod</option>
+                    <option value="Punagam">Punagam</option>
+                    <option value="Ramnagar">Ramnagar</option>
+                    <option value="Rander">Rander</option>
+                    <option value="Ring Road">Ring Road</option>
+                    <option value="Sachin">Sachin</option>
+                    <option value="Sagrampura">Sagrampura</option>
+                    <option value="Saiyadpura">Saiyadpura</option>
+                    <option value="Salabatpura">Salabatpura</option>
+                    <option value="Saniya Gam">Saniya Gam</option>
+                    <option value="Saroli">Saroli</option>
+                    <option value="Shahpor">Shahpor</option>
+                    <option value="Simada">Simada</option>
+                    <option value="Sonifalia">Sonifalia</option>
+                    <option value="Tadwadi">Tadwadi</option>
+                    <option value="Tathiya">Tathiya</option>
+                    <option value="Uchchhal">Uchchhal</option>
+                    <option value="Udhna">Udhna</option>
+                    <option value="Umbhel">Umbhel</option>
+                    <option value="Unn">Unn</option>
+                    <option value="Varachha">Varachha</option>
+                    <option value="Ved Road">Ved Road</option>
+                    <option value="Velnja">Velnja</option>
+                    <option value="Vesu">Vesu</option>
+                    <option value="Wadifalia">Wadifalia</option>
+                    <option value="Yogi Chowk">Yogi Chowk</option>
+                    <option value="Other">Other (Please Specify)</option>
+                </select>
+                <!-- Hidden text box that appears if 'Other' is selected -->
+                <input type="text" id="areaOther" placeholder="Type area name" style="display:none; margin-top: 5px;">
+                <input type="hidden" name="area" id="areaField">
+            </div>
+            <div style="flex:1;"><label>Pincode *</label><input type="text" name="pincode" required></div>
         </div>
-
-        <!-- NEW TAB CONTROLS -->
-        <div class="tab-container">
-            <button id="tab-open" class="tab-btn active" onclick="switchTab('open')">Pending</button>
-            <button id="tab-done" class="tab-btn" onclick="switchTab('done')">Completed</button>
+        
+        <label>Device Details *</label>
+        <div style="display:flex; gap:10px;">
+            <input type="text" name="brand" placeholder="Brand" required>
+            <input type="text" name="modelNumber" placeholder="Model No" required>
         </div>
+        
+        <label>Problem Details *</label><textarea name="problem" placeholder="What is the issue?" required></textarea>
+        
+        <label>Dealer Shop Name * <span class="sub-label">(Type NA if not applicable)</span></label>
+        <input type="text" name="dealerName" required>
+        
+        <input type="hidden" name="complaintNo" id="cNoField">
+        
+        <button type="submit" id="subBtn">Submit Complaint</button>
+    </form>
+</div>
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycby-dCz98IG73h7gWufYxeXJQUUo9XG-wdcPgNzGqoOYfE-x-6Wa68feDkKzluQbXBQi/exec';
+    const ADMIN_WHATSAPP = "919624870096"; 
+    const DASHBOARD_LINK = "https://yanshi-creator.github.io/Complaint-form/admin.html";
 
-        <!-- NEW AREA FILTER -->
-        <div class="filter-bar">
-            <span>📍 Filter Area:</span>
-            <select id="areaFilter" class="area-select" onchange="renderCards()">
-                <option value="ALL">Show All Areas</option>
-            </select>
-        </div>
+    // This function shows/hides the "Other" text box
+    function checkOtherArea() {
+        var dropdown = document.getElementById("areaDropdown");
+        var otherInput = document.getElementById("areaOther");
+        if (dropdown.value === "Other") {
+            otherInput.style.display = "block";
+            otherInput.required = true;
+        } else {
+            otherInput.style.display = "none";
+            otherInput.required = false;
+        }
+    }
 
-        <!-- TWO SEPARATE LISTS -->
-        <div id="list-open"></div>
-        <div id="list-done" style="display:none;"></div>
-    </div>
+    const form = document.getElementById('complaintForm');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('subBtn');
+        btn.innerText = "Checking Details...";
+        btn.disabled = true;
 
-    <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycby-dCz98IG73h7gWufYxeXJQUUo9XG-wdcPgNzGqoOYfE-x-6Wa68feDkKzluQbXBQi/exec';
-        const DASHBOARD_LINK = 'https://yanshi-creator.github.io/Complaint-form/admin.html';
+        // Figure out the final area to submit (Dropdown value OR Custom typed value)
+        const dropdownVal = document.getElementById('areaDropdown').value;
+        const otherVal = document.getElementById('areaOther').value;
+        const finalAreaLocation = (dropdownVal === "Other") ? otherVal : dropdownVal;
+        
+        // Put the final area into the hidden field so Google Sheets catches it
+        document.getElementById('areaField').value = finalAreaLocation;
 
-        const accounts = {
-            "santosh": { pass: "1234", excelName: "SANTOSH" },
-            "rakesh": { pass: "1234", excelName: "RAKESH" },
-            "ajay": { pass: "1234", excelName: "AJAY" },
-            "admin": { pass: "admin123", excelName: "ALL" } 
-        };
-
-        let currentTech = "";
-        let globalData = []; // Store data globally to allow fast filtering
-        let autoRefreshInterval;
-
-        window.onload = () => {
-            const savedSession = localStorage.getItem("ramaTechUser");
-            if (savedSession && accounts[savedSession]) processLogin(savedSession);
-        };
-
-        function checkLogin() {
-            const user = document.getElementById('userid').value.trim().toLowerCase();
-            const pass = document.getElementById('password').value.trim();
-            if (accounts[user] && accounts[user].pass === pass) {
-                localStorage.setItem("ramaTechUser", user);
-                processLogin(user);
+        const newComplaintNo = "RMA-" + Math.floor(10000 + Math.random() * 90000);
+        document.getElementById('cNoField').value = newComplaintNo;
+        
+        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => response.json())
+        .then(data => { 
+            if (data.result === "Duplicate") {
+                alert("⚠️ DUPLICATE COMPLAINT DETECTED ⚠️\n\nA complaint for this Customer Name and Problem was already submitted in the last 24 hours.");
+                btn.innerText = "Submit Complaint";
+                btn.disabled = false;
             } else {
-                document.getElementById('login-error').style.display = "block";
-            }
-        }
-
-        function processLogin(userId) {
-            currentTech = accounts[userId].excelName;
-            document.getElementById('login-screen').style.display = "none";
-            document.getElementById('dashboard').style.display = "block";
-            document.getElementById('logoutBtn').style.display = "block";
-            document.getElementById('techNameBar').innerText = `👤 ${currentTech === 'ALL' ? 'ADMIN VIEW' : currentTech + "'S JOBS"}`;
-            load(); 
-            autoRefreshInterval = setInterval(load, 180000); 
-        }
-
-        function logout() {
-            localStorage.removeItem("ramaTechUser");
-            clearInterval(autoRefreshInterval);
-            document.getElementById('userid').value = "";
-            document.getElementById('password').value = "";
-            document.getElementById('login-error').style.display = "none";
-            document.getElementById('login-screen').style.display = "block";
-            document.getElementById('dashboard').style.display = "none";
-            document.getElementById('logoutBtn').style.display = "none";
-        }
-
-        // Toggles between Pending and Completed views
-        function switchTab(tab) {
-            if(tab === 'open') {
-                document.getElementById('tab-open').classList.add('active');
-                document.getElementById('tab-done').classList.remove('active');
-                document.getElementById('list-open').style.display = "block";
-                document.getElementById('list-done').style.display = "none";
-            } else {
-                document.getElementById('tab-done').classList.add('active');
-                document.getElementById('tab-open').classList.remove('active');
-                document.getElementById('list-done').style.display = "block";
-                document.getElementById('list-open').style.display = "none";
-            }
-        }
-
-        async function load() {
-            try {
-                const resp = await fetch(scriptURL + "?action=read");
-                const rawData = await resp.json();
+                alert("Success! Your complaint is registered.\n\nYour Complaint No: " + newComplaintNo); 
                 
-                // Filter raw data to only keep jobs for the logged-in tech (or ALL for admin)
-                globalData = rawData.filter(item => {
-                    const techAssigned = (item.tech || "").toUpperCase();
-                    return (currentTech === "ALL" || techAssigned.includes(currentTech));
-                });
+                const waMessage = `NEW - ${newComplaintNo} - ${finalAreaLocation}\n${DASHBOARD_LINK}`;
+                const waLink = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(waMessage)}`;
+                window.open(waLink, '_blank'); 
 
-                document.getElementById('jobCountBadge').innerText = globalData.length;
-                updateAreaDropdown();
-                renderCards();
-
-            } catch (e) { console.error("Error loading data", e); }
-        }
-
-        // Extracts unique areas and populates the dropdown
-        function updateAreaDropdown() {
-            const areaSelect = document.getElementById('areaFilter');
-            const currentSelection = areaSelect.value; // Remember what they selected
-            
-            const uniqueAreas = new Set();
-            globalData.forEach(item => {
-                if(item.area) uniqueAreas.add(item.area.trim().toUpperCase());
-            });
-
-            let optionsHtml = `<option value="ALL">Show All Areas</option>`;
-            Array.from(uniqueAreas).sort().forEach(area => {
-                optionsHtml += `<option value="${area}">${area}</option>`;
-            });
-
-            areaSelect.innerHTML = optionsHtml;
-            
-            // Re-apply previous selection if it still exists
-            if (Array.from(uniqueAreas).includes(currentSelection)) {
-                areaSelect.value = currentSelection;
-            }
-        }
-
-        // Draws the cards based on Tab and Area Filter
-        function renderCards() {
-            const listOpen = document.getElementById('list-open');
-            const listDone = document.getElementById('list-done');
-            const selectedArea = document.getElementById('areaFilter').value;
-
-            listOpen.innerHTML = "";
-            listDone.innerHTML = "";
-            let openCount = 0;
-            let doneCount = 0;
-
-            globalData.forEach(item => {
-                const itemArea = (item.area || "").trim().toUpperCase();
+                form.reset();
+                // Hide the 'Other' box again upon resetting
+                document.getElementById('areaOther').style.display = "none";
+                document.getElementById('areaOther').required = false;
                 
-                // Skip if area doesn't match filter
-                if (selectedArea !== "ALL" && itemArea !== selectedArea) return;
-
-                const isPending = item.status === "Open";
-                const itemDate = new Date(item.date);
-                const timeStr = itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const dateStr = itemDate.toLocaleDateString();
-                
-                const msg = `*NEW COMPLAINT: ${item.complaintNo || 'N/A'}*\n` +
-                            `📅 *Time:* ${dateStr} | ${timeStr}\n` +
-                            `👤 *Name:* ${item.name}\n` +
-                            `📞 *Phone:* ${item.phone}\n` +
-                            `🏪 *Dealer:* ${item.dealer || 'Direct Customer'}\n` +
-                            `📍 *Area:* ${item.area || 'N/A'} (${item.pincode})\n` +
-                            `🏠 *Address:* ${item.address}\n` +
-                            `🔧 *Device:* ${item.brand || 'N/A'} - ${item.modelNumber || 'N/A'}\n` +
-                            `⚠️ *Issue:* ${item.problem}\n\n` +
-                            `🔗 *Dashboard:* ${DASHBOARD_LINK}`;
-                
-                const statusIcon = item.status === "Completed" ? "✅ COMPLETED" : "❌ INCOMPLETE";
-                const statusColor = item.status === "Completed" ? "green" : "#dc3545";
-
-                const cardHtml = `
-                <div class="card status-${item.status}">
-                    <div style="margin-bottom: 8px;">
-                        <span class="cno-badge">🆔 ${item.complaintNo || 'NO ID'}</span>
-                        <span class="time-badge">🕒 ${dateStr} | ${timeStr}</span>
-                        ${!isPending ? `<b style="float:right; color:${statusColor}; font-size:12px; margin-top:4px;">${statusIcon}</b>` : ''}
-                    </div>
-                    ${currentTech === 'ALL' ? `<div style="background:#e3f2fd; color:#007bff; display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:bold;">Assigned to: ${item.tech}</div>` : ''}
-                    <span class="shop-tag">🏪 Dealer Shop: ${item.dealer || 'Direct Customer'}</span>
-                    <h3 style="margin:5px 0; font-size: 18px;">${item.name}</h3>
-                    <b style="color:#007bff; font-size:1.1em;">📞 ${item.phone}</b>
-                    
-                    <div class="info-grid">
-                        <div><b>Brand:</b> ${item.brand || 'N/A'}</div>
-                        <div><b>Model:</b> ${item.modelNumber || 'N/A'}</div>
-                        <div><b>Area:</b> ${item.area || 'N/A'} - ${item.pincode}</div>
-                    </div>
-                    <p style="font-size:14px; margin: 10px 0;"><b>Address:</b> ${item.address}</p>
-                    
-                    <div class="prob-box"><small style="color:#888;">CUSTOMER ISSUE:</small><br><strong>${item.problem}</strong></div>
-                    ${isPending ? `
-                        <textarea id="rem-${item.row}" class="remark-box" rows="2" placeholder="Tech Notes: What was done? Or why is it incomplete?"></textarea>
-                        <div class="btn-row">
-                            <button class="c-btn" style="background:#28a745" onclick="update(event, '${item.row}', 'Completed')">Complete</button>
-                            <button class="c-btn" style="background:#dc3545" onclick="update(event, '${item.row}', 'Incomplete')">Incomplete</button>
-                        </div>
-                        <a href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" class="wa-btn">📲 WhatsApp Dispatch</a>
-                    ` : `<div style="margin-top:15px; font-size:14px; background:#e9ecef; padding:10px; border-radius:6px; border-left: 4px solid ${statusColor};"><small style="color:#666;">TECHNICIAN REMARKS:</small><br><b>${item.remarks || 'No remarks provided.'}</b></div>`}
-                </div>`;
-
-                if (isPending) {
-                    listOpen.innerHTML += cardHtml;
-                    openCount++;
-                } else {
-                    listDone.innerHTML += cardHtml;
-                    doneCount++;
-                }
-            });
-
-            if (openCount === 0) listOpen.innerHTML = '<div class="empty-msg">No pending jobs for this area! ☕</div>';
-            if (doneCount === 0) listDone.innerHTML = '<div class="empty-msg">No completed jobs to show.</div>';
-        }
-
-        async function update(event, row, status) {
-            const remark = document.getElementById('rem-' + row).value.trim();
-            if(!remark) { alert("Please type your remarks before submitting!"); return; }
-            if(!confirm(`Mark this job as ${status}?`)) return;
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "Saving...";
-            btn.disabled = true;
-
-            try {
-                await fetch(`${scriptURL}?action=updateStatus&row=${row}&status=${status}&remarks=${encodeURIComponent(remark)}`);
-                alert("Report Saved Successfully!");
-                load(); // Reloads data instantly
-            } catch (err) {
-                alert("Error saving report. Please check your internet connection.");
-                btn.innerText = originalText;
+                btn.innerText = "Submit Complaint";
                 btn.disabled = false;
             }
-        }
-    </script>
+        })
+        .catch(error => {
+            alert("An error occurred. Please try again.");
+            btn.innerText = "Submit Complaint";
+            btn.disabled = false;
+        });
+    });
+</script>
 </body>
 </html>
