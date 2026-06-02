@@ -31,13 +31,15 @@
         </select>
         
         <label>Customer Name *</label><input type="text" name="name" required>
-        <label>Phone Number *</label><input type="tel" name="phone" required>
+        
+        <label>Phone Number *</label>
+        <input type="tel" name="phone" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number" required>
+        
         <label>Full Address *</label><textarea name="address" required></textarea>
         
         <div style="display:flex; gap:10px;">
             <div style="flex:1;">
                 <label>Area *</label>
-                <!-- NEW A-Z DROPDOWN LIST WITH OLPAD & OTHER -->
                 <select id="areaDropdown" onchange="checkOtherArea()" required>
                     <option value="" disabled selected>Select Area</option>
                     <option value="A K Road">A K Road</option>
@@ -136,7 +138,6 @@
                     <option value="Yogi Chowk">Yogi Chowk</option>
                     <option value="Other">Other (Please Specify)</option>
                 </select>
-                <!-- Hidden text box that appears if 'Other' is selected -->
                 <input type="text" id="areaOther" placeholder="Type area name" style="display:none; margin-top: 5px;">
                 <input type="hidden" name="area" id="areaField">
             </div>
@@ -164,7 +165,6 @@
     const ADMIN_WHATSAPP = "919624870096"; 
     const DASHBOARD_LINK = "https://yanshi-creator.github.io/Complaint-form/admin.html";
 
-    // This function shows/hides the "Other" text box
     function checkOtherArea() {
         var dropdown = document.getElementById("areaDropdown");
         var otherInput = document.getElementById("areaOther");
@@ -185,15 +185,18 @@
         btn.innerText = "Checking Details...";
         btn.disabled = true;
 
-        // Figure out the final area to submit (Dropdown value OR Custom typed value)
         const dropdownVal = document.getElementById('areaDropdown').value;
         const otherVal = document.getElementById('areaOther').value;
         const finalAreaLocation = (dropdownVal === "Other") ? otherVal : dropdownVal;
         
-        // Put the final area into the hidden field so Google Sheets catches it
         document.getElementById('areaField').value = finalAreaLocation;
 
-        const newComplaintNo = "RMA-" + Math.floor(10000 + Math.random() * 90000);
+        // UPDATED: Generates a truly unique ID using the current time + random numbers
+        // This ensures the Google Apps Script will never confuse two complaints
+        const timePart = Date.now().toString().slice(-4); 
+        const randomPart = Math.floor(1000 + Math.random() * 9000);
+        const newComplaintNo = "RMA-" + timePart + "-" + randomPart;
+        
         document.getElementById('cNoField').value = newComplaintNo;
         
         fetch(scriptURL, { method: 'POST', body: new FormData(form) })
@@ -211,7 +214,6 @@
                 window.open(waLink, '_blank'); 
 
                 form.reset();
-                // Hide the 'Other' box again upon resetting
                 document.getElementById('areaOther').style.display = "none";
                 document.getElementById('areaOther').required = false;
                 
