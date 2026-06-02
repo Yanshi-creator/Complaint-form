@@ -63,13 +63,11 @@
             <span class="job-count" id="jobCountBadge">0</span>
         </div>
 
-        <!-- NEW TAB CONTROLS -->
         <div class="tab-container">
             <button id="tab-open" class="tab-btn active" onclick="switchTab('open')">Pending</button>
             <button id="tab-done" class="tab-btn" onclick="switchTab('done')">Completed</button>
         </div>
 
-        <!-- NEW AREA FILTER -->
         <div class="filter-bar">
             <span>📍 Filter Area:</span>
             <select id="areaFilter" class="area-select" onchange="renderCards()">
@@ -77,7 +75,6 @@
             </select>
         </div>
 
-        <!-- TWO SEPARATE LISTS -->
         <div id="list-open"></div>
         <div id="list-done" style="display:none;"></div>
     </div>
@@ -94,7 +91,7 @@
         };
 
         let currentTech = "";
-        let globalData = []; // Store data globally to allow fast filtering
+        let globalData = []; 
         let autoRefreshInterval;
 
         window.onload = () => {
@@ -121,7 +118,6 @@
             document.getElementById('techNameBar').innerText = `👤 ${currentTech === 'ALL' ? 'ADMIN VIEW' : currentTech + "'S JOBS"}`;
             load(); 
             
-            // ⏱️ TIMER: Refreshes every 60,000 milliseconds (1 minute)
             autoRefreshInterval = setInterval(load, 60000); 
         }
 
@@ -136,7 +132,6 @@
             document.getElementById('logoutBtn').style.display = "none";
         }
 
-        // Toggles between Pending and Completed views
         function switchTab(tab) {
             if(tab === 'open') {
                 document.getElementById('tab-open').classList.add('active');
@@ -153,10 +148,11 @@
 
         async function load() {
             try {
-                const resp = await fetch(scriptURL + "?action=read");
+                // FIXED: Cache-buster to stop jobs from randomly disappearing
+                const noCacheUrl = scriptURL + "?action=read&t=" + new Date().getTime();
+                const resp = await fetch(noCacheUrl, { cache: "no-store" });
                 const rawData = await resp.json();
                 
-                // Filter raw data to only keep jobs for the logged-in tech (or ALL for admin)
                 globalData = rawData.filter(item => {
                     const techAssigned = (item.tech || "").toUpperCase();
                     return (currentTech === "ALL" || techAssigned.includes(currentTech));
@@ -169,10 +165,9 @@
             } catch (e) { console.error("Error loading data", e); }
         }
 
-        // Extracts unique areas and populates the dropdown
         function updateAreaDropdown() {
             const areaSelect = document.getElementById('areaFilter');
-            const currentSelection = areaSelect.value; // Remember what they selected
+            const currentSelection = areaSelect.value; 
             
             const uniqueAreas = new Set();
             globalData.forEach(item => {
@@ -186,13 +181,11 @@
 
             areaSelect.innerHTML = optionsHtml;
             
-            // Re-apply previous selection if it still exists
             if (Array.from(uniqueAreas).includes(currentSelection)) {
                 areaSelect.value = currentSelection;
             }
         }
 
-        // Draws the cards based on Tab and Area Filter
         function renderCards() {
             const listOpen = document.getElementById('list-open');
             const listDone = document.getElementById('list-done');
@@ -206,7 +199,6 @@
             globalData.forEach(item => {
                 const itemArea = (item.area || "").trim().toUpperCase();
                 
-                // Skip if area doesn't match filter
                 if (selectedArea !== "ALL" && itemArea !== selectedArea) return;
 
                 const isPending = item.status === "Open";
@@ -249,10 +241,10 @@
                     
                     <div class="prob-box"><small style="color:#888;">CUSTOMER ISSUE:</small><br><strong>${item.problem}</strong></div>
                     ${isPending ? `
-                        <textarea id="rem-${item.row}" class="remark-box" rows="2" placeholder="Tech Notes: What was done? Or why is it incomplete?"></textarea>
+                        <textarea id="rem-${item.complaintNo}" class="remark-box" rows="2" placeholder="Tech Notes: What was done? Or why is it incomplete?"></textarea>
                         <div class="btn-row">
-                            <button class="c-btn" style="background:#28a745" onclick="update(event, '${item.row}', 'Completed')">Complete</button>
-                            <button class="c-btn" style="background:#dc3545" onclick="update(event, '${item.row}', 'Incomplete')">Incomplete</button>
+                            <button class="c-btn" style="background:#28a745" onclick="update(event, '${item.complaintNo}', 'Completed')">Complete</button>
+                            <button class="c-btn" style="background:#dc3545" onclick="update(event, '${item.complaintNo}', 'Incomplete')">Incomplete</button>
                         </div>
                         <a href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" class="wa-btn">📲 WhatsApp Dispatch</a>
                     ` : `<div style="margin-top:15px; font-size:14px; background:#e9ecef; padding:10px; border-radius:6px; border-left: 4px solid ${statusColor};"><small style="color:#666;">TECHNICIAN REMARKS:</small><br><b>${item.remarks || 'No remarks provided.'}</b></div>`}
@@ -271,8 +263,9 @@
             if (doneCount === 0) listDone.innerHTML = '<div class="empty-msg">No completed jobs to show.</div>';
         }
 
-        async function update(event, row, status) {
-            const remark = document.getElementById('rem-' + row).value.trim();
+        // FIXED: Replaced row logic with complaintNo logic to prevent overwriting
+        async function update(event, complaintNo, status) {
+            const remark = document.getElementById('rem-' + complaintNo).value.trim();
             if(!remark) { alert("Please type your remarks before submitting!"); return; }
             if(!confirm(`Mark this job as ${status}?`)) return;
             const btn = event.target;
@@ -281,7 +274,7 @@
             btn.disabled = true;
 
             try {
-                await fetch(`${scriptURL}?action=updateStatus&row=${row}&status=${status}&remarks=${encodeURIComponent(remark)}`);
+                await fetch(`${scriptURL}?action=updateStatus&complaintNo=${complaintNo}&status=${status}&remarks=${encodeURIComponent(remark)}`);
                 alert("Report Saved Successfully!");
                 load(); // Reloads data instantly
             } catch (err) {
